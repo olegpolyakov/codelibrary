@@ -1,7 +1,7 @@
 import { initializeApp, firestore, auth } from 'firebase';
 
 initializeApp({
-    apiKey: 'AIzaSyC6TtRsHffm2TwQCb7lUcXLDJh5N_gMSHE',
+    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
     authDomain: 'codelibrary-47708.firebaseapp.com',
     databaseURL: 'https://codelibrary-47708.firebaseio.com',
     projectId: 'codelibrary-47708',
