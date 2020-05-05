@@ -1,0 +1,7 @@
+.book-card {
+    .mdc-card__media {
+        &::before {
+            margin-top: 140%;
+        }
+    }
+}
