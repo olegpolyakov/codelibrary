@@ -1,4 +1,4 @@
-import { initializeApp, firestore, auth } from 'firebase';
+import { initializeApp } from 'firebase';
 
 initializeApp({
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -10,8 +10,3 @@ initializeApp({
     appId: '1:212510535763:web:561c6f91929c2663d856a6',
     measurementId: 'G-Y0XWSFBXDR'
 });
-
-const db = firestore();
-const auth = auth();
-
-export { db, auth };
