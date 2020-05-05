@@ -10,6 +10,7 @@
     "deploy": "firebase deploy --only hosting:codelibrary-fe720"
   },
   "dependencies": {
+    "disqus-react": "^1.0.8",
     "firebase": "^7.14.1",
     "mdc-react": "^0.14.6",
     "react": "^16.13.1",
