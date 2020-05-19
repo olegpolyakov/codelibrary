@@ -1,9 +1,12 @@
-import * as db from 'api/db';
+import * as db from '@/api/db';
 
 export default function reducer(state = [], action) {
     switch (action.type) {
         case 'GET_TOPICS':
             return action.payload.topics;
+
+        case 'MARK_TOPIC':
+            return state.map(topic => topic.id !== action.payload.topic.id ? topic : action.payload.topic)
 
         default:
             return state;
@@ -19,3 +22,26 @@ export function getTopics() {
             }
         }));
 }
+
+export function markTopic(topic, userId) {
+    const data = {
+        markedBy: topic.markedBy ? (
+            topic.markedBy.includes(userId) ?
+                topic.markedBy.filter(id => id !== userId) :
+                topic.markedBy.concat(userId)
+            ) : [userId]
+    };
+
+    return db.updateTopic(topic.id, data)
+        .then(topic => ({
+            type: 'MARK_TOPIC',
+            payload: {
+                topic
+            }
+        }));
+}
+
+export const actions = {
+    getTopics,
+    markTopic
+};

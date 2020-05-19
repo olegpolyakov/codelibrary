@@ -1,3 +1,5 @@
+import * as db from '@/api/db';
+
 export default function reducer(state = null, action) {
     switch (action.type) {
         case 'LOGIN_USER':
@@ -5,6 +7,12 @@ export default function reducer(state = null, action) {
 
         case 'LOGOUT_USER':
             return null;
+
+        case 'GET_USER':
+            return {
+                ...state,
+                ...action.payload.user
+            };
 
         default:
             return state;
@@ -24,4 +32,14 @@ export function logout() {
     return {
         type: 'LOGOUT_USER'
     };
+}
+
+export function getUser(userId) {
+    return db.getUser(userId)
+        .then(user => ({
+            type: 'GET_USER',
+            payload: {
+                user
+            }
+        }));
 }

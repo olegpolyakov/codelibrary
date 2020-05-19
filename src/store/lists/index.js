@@ -1,4 +1,4 @@
-import * as db from 'api/db';
+import * as db from '@/api/db';
 
 export default function reducer(state = {}, action) {
     switch (action.type) {
