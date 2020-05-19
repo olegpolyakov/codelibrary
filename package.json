@@ -1,11 +1,11 @@
 {
   "name": "codelibrary",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "start": "webpack -wd --env=development",
     "build": "webpack -p --env=production",
-    "deploy": "firebase deploy --only hosting:codelibrary-fe720"
+    "deploy": "firebase deploy --only hosting:codelibrary-47708"
   },
   "dependencies": {
     "disqus-react": "^1.0.8",
