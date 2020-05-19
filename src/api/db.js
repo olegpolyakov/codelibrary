@@ -9,15 +9,59 @@ const operatorForField = {
     subtopics: 'array-contains',
 };
 
+export function getUser(userId) {
+    return db.collection('users')
+        .doc(userId)
+        .get()
+        .then(mapDoc);
+}
+
 export function getTopics() {
     return db.collection('topics')
         .get()
         .then(mapSnapshot);        
 }
 
+export function updateTopic(topicId, data) {
+    return db.collection('topics')
+        .doc(topicId)
+        .update(data)
+        .then(() => db.collection('topics').doc(topicId).get())
+        .then(mapDoc);
+}
+
 export function getBooks() {
     return db.collection('books')
         .limit(12)
+        .get()
+        .then(mapSnapshot);        
+}
+
+export function getNewBooks() {
+    return db.collection('books')
+        .limit(12)
+        .orderBy('year', 'desc')
+        .get()
+        .then(mapSnapshot);        
+}
+
+export function getFavoriteBooks(userId) {
+    return db.collection('books')
+        .where('likedBy', 'array-contains', userId)
+        .get()
+        .then(mapSnapshot);        
+}
+
+export function getReadBooks(userId) {
+    return db.collection('books')
+        .where('markedBy', 'array-contains', userId)
+        .get()
+        .then(mapSnapshot);        
+}
+
+export function getCompletedBooks(userId) {
+    return db.collection('books')
+        .where('readBy', 'array-contains', userId)
         .get()
         .then(mapSnapshot);        
 }
@@ -58,18 +102,12 @@ export function getBook(slug) {
         });
 }
 
-export function createBook(data) {
-    return db.collection('books')
-        .add(data)
-        .then(docRef => docRef.get())
-        .then(mapDoc);
-}
-
 export function updateBook(bookId, data) {
     return db.collection('books')
         .doc(bookId)
         .update(data)
-        .then(() => data);
+        .then(() => db.collection('books').doc(bookId).get())
+        .then(mapDoc);
 }
 
 export function getLists(userId) {
@@ -84,7 +122,6 @@ export function getList(listId) {
         .get()
         .then(mapDoc)
         .then(list => {
-            
             return Promise.all(list.books.map(mapRef))
                 .then(books => {
                     list.books = books;
