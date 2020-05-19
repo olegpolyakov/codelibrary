@@ -3,15 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "start": "webpack -wd --env=development",
+    "build": "webpack -p --env=production",
     "deploy": "firebase deploy --only hosting:codelibrary-fe720"
   },
   "dependencies": {
     "disqus-react": "^1.0.8",
     "firebase": "^7.14.1",
+    "markdown-it": "^10.0.0",
     "mdc-react": "^0.14.6",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
@@ -24,7 +23,23 @@
     "sass": "^1.26.3"
   },
   "devDependencies": {
-    "redux-devtools-extension": "^2.13.8"
+    "@babel/core": "^7.9.0",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/preset-env": "^7.9.0",
+    "@babel/preset-react": "^7.9.4",
+    "autoprefixer": "^9.7.5",
+    "babel-loader": "^8.1.0",
+    "clean-webpack-plugin": "^3.0.0",
+    "css-loader": "^3.4.2",
+    "dotenv": "^8.2.0",
+    "html-webpack-plugin": "^4.3.0",
+    "mini-css-extract-plugin": "^0.9.0",
+    "postcss-loader": "^3.0.0",
+    "redux-devtools-extension": "^2.13.8",
+    "sass": "1.26.3",
+    "sass-loader": "^8.0.2",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11"
   },
   "eslintConfig": {
     "extends": "react-app"
