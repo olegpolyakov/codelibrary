@@ -4,9 +4,12 @@ import {
     Dialog, DialogTitle, DialogContent, DialogActions
 } from 'mdc-react';
 
+import './index.scss';
+
 export default function FormDialog({ form, open, title, onClose, children }) {
     return (
         <Dialog
+            className="form-dialog"
             open={open}
             onClose={onClose}
         >

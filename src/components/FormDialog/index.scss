@@ -1,0 +1,20 @@
+.form-dialog {
+    .mdc-dialog__surface {
+        min-width: 480px;
+    }
+
+    .mdc-text-field {
+        + .mdc-text-field,
+        + .mdc-select {
+            margin-top: 1rem;
+        }
+    }
+
+    .mdc-text-field-helper-line {
+        margin-bottom: 1rem;
+    }
+
+    .mdc-select {
+        margin-bottom: 1rem;
+    }
+}

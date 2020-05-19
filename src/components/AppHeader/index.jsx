@@ -1,5 +1,5 @@
 import React, { useRef, useState, useCallback }  from 'react';
-import { useRouteMatch } from 'react-router-dom';
+import { Link, useRouteMatch } from 'react-router-dom';
 import {
     Avatar,
     Icon,
@@ -8,14 +8,14 @@ import {
     TopAppBar
 } from 'mdc-react';
 
-import { useStore } from 'hooks/store';
+import { useStore } from '@/hooks/store';
 
 import './index.scss';
 
-export default function AppHeader({ onNavigationButtonClick, onAddButtonClick, onSignInButtonClick, onSignOutButtonClick }) {
+export default function AppHeader({ onNavigationButtonClick, onSignInButtonClick, onSignOutButtonClick }) {
+    const match = useRouteMatch('/:topicId');
     const menuAnchor = useRef();
     const [isMenuOpen, setMenuOpen] = useState(false);
-    const match = useRouteMatch('/:topicId');
     const [{ topics, book, user }] = useStore(state => ({
         topics: state.topics,
         book: state.books.single,
@@ -37,7 +37,7 @@ export default function AppHeader({ onNavigationButtonClick, onAddButtonClick, o
     return (
         <TopAppBar
             id="app-header"
-            title={`CodeLibrary${title}`}
+            title={<span><Link to="/">CodeLibrary</Link>{title}</span>}
             navigationIcon={
                 <IconButton onClick={onNavigationButtonClick}>
                     <Icon>menu</Icon>
@@ -45,9 +45,18 @@ export default function AppHeader({ onNavigationButtonClick, onAddButtonClick, o
             }
             fixed
             actionItems={[
-                <IconButton title="Предложить книгу" onClick={onAddButtonClick}>
-                    <Icon>add</Icon>
-                </IconButton>,
+                (user ?
+                    <IconButton
+                        title="Предложить книгу"
+                        element="a"
+                        href="mailto:admin@codelibrary.ru?subject=Предложение добавить книгу"
+                    >
+                        <Icon>add</Icon>
+                    </IconButton>
+                    :
+                    <></>
+                ),
+
                 (user ?
                     <Avatar src={user.photoURL} onClick={openMenu} />
                     :
