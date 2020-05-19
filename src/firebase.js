@@ -1,7 +1,7 @@
 import { initializeApp } from 'firebase';
 
 initializeApp({
-    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+    apiKey: FIREBASE_API_KEY,
     authDomain: 'codelibrary-47708.firebaseapp.com',
     databaseURL: 'https://codelibrary-47708.firebaseio.com',
     projectId: 'codelibrary-47708',
