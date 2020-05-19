@@ -1,4 +1,10 @@
-@import '~mdc-react/dist/index.css';
+$primary-color: #263238 !default;
+$secondary-color: #2196f3 !default;
+
+@use 'mdc-react' with (
+    $primary: $primary-color,
+    $secondary: $secondary-color
+);
 
 * {
     box-sizing: content-box;
