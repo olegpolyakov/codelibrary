@@ -1,17 +1,18 @@
 import React, { useEffect } from 'react';
 import {
     Layout,
-    LayoutGrid, LayoutGridCell
+    LayoutGrid, LayoutGridCell,
+    Typography
 } from 'mdc-react';
 
-import { useStore } from 'hooks/store';
-import { searchBooks } from 'store/books';
-import BookCard from 'components/BookCard';
+import { useStore } from '@/hooks/store';
+import { actions as bookActions } from '@/store/books';
+import BookCard from '@/components/BookCard';
 
 import './index.scss';
 
 export default function SearchPage({ location }) {
-    const [state, actions] = useStore(state => state, { searchBooks });
+    const [books, actions] = useStore(state => state.books.list, bookActions);
 
     useEffect(() => {
         const params = location.search.slice(1).split('&').reduce((result, pair) => {
@@ -19,15 +20,17 @@ export default function SearchPage({ location }) {
             result[key] = value;
             return result;
         }, {});
-
-        actions.searchBooks(params).then(console.log);
+        
+        actions.searchBooks(params);
     }, [actions, location.search]);
-
-    const books = state.books;
     
     return (
         <Layout id="search-page" className="page">
             <LayoutGrid>
+                <LayoutGridCell span="12">
+                    <Typography variant="headline6" noMargin>Результаты поиска по запросу</Typography>
+                </LayoutGridCell>
+
                 {books.map(book =>
                     <LayoutGridCell key={book.id} span="2">
                         <BookCard

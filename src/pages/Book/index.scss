@@ -2,4 +2,16 @@
     img {
         width: 100%;
     }
+
+    .mdc-badge[data-badge="0"] {
+        &::after {
+            display: none;
+        }
+    }
+
+    .book-description {
+        p {
+            margin-top: 0;
+        }
+    }
 }

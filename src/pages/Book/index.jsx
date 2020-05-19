@@ -1,20 +1,19 @@
-import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useCallback } from 'react';
 import {
     Badge,
     Icon,
     IconButton,
     Layout,
     LayoutGrid, LayoutGridCell,
-    List, ListItem, ListItemGraphic, ListItemText,
-    Spinner,
     Typography
 } from 'mdc-react';
 
-import { useStore } from 'hooks/store';
-import { actions as bookActions } from 'store/books';
-
-import BookComments from 'components/BookComments';
+import md from '@/utils/md';
+import { useStore } from '@/hooks/store';
+import { actions as bookActions } from '@/store/books';
+import LoadingIndicator from '@/components/LoadingIndicator';
+import BookDetailsList from '@/components/BookDetailsList';
+import BookComments from '@/components/BookComments';
 
 import './index.scss';
 
@@ -30,40 +29,66 @@ export default function BookPage({ match }) {
         return () => actions.unsetBook();
     }, [actions, match.params.bookId]);
 
-    function handleBookmarkButtonClick() {
-        if (user) {
-            actions.bookmarkBook(book, user);
-        }
-    }
-
-    function handleLikeButtonClick() {
+    const handleLikeButtonClick = useCallback(() => {
         if (user) {
             actions.likeBook(book, user);
         }
-    }
+    }, [actions, user, book]);
+
+    const handleBookmarkButtonClick = useCallback(() => {
+        if (user) {
+            actions.markBook(book, user);
+        }
+    }, [actions, user, book]);
+
+    const handleReadButtonClick = useCallback(() => {
+        if (user) {
+            actions.readBook(book, user);
+        }
+    }, [actions, user, book]);
     
-    if (!book) return <Spinner />;
+    if (!book) return <LoadingIndicator />;
     
     return (
         <Layout id="book-page" className="page">
             <LayoutGrid>
                 <LayoutGridCell span="12">
                     <Layout row justifyContent="between">
-                        <Typography variant="headline4" noMargin>{book.title}</Typography>
+                        <Typography className="book-title" variant="headline4" noMargin>{book.title}</Typography>
 
                         <Layout>
-                            <IconButton
-                                on={false}
-                                icon={<Icon>bookmark</Icon>}
-                                onClick={handleBookmarkButtonClick}
-                                disabled={!user}
-                            />
-
-                            <Badge value={book.likes.length} overlap>
+                            <Badge
+                                value={book.likedBy.length}
+                                overlap
+                            >
                                 <IconButton
-                                    on={false}
-                                    icon={<Icon>thumb_up</Icon>}
+                                    icon={<Icon>{user && book.likedBy?.includes(user.uid) ? 'favorite' : 'favorite_border'}</Icon>}
+                                    title={user && book.likedBy?.includes(user.uid) ? 'Убрать отметку' : 'Отметить книгу как понравившуюся'}
                                     onClick={handleLikeButtonClick}
+                                    disabled={!user}
+                                />
+                            </Badge>
+
+                            <Badge
+                                value={book.markedBy.length}
+                                overlap
+                            >
+                                <IconButton
+                                    icon={<Icon>{user && book.markedBy?.includes(user.uid) ? 'bookmark' : 'bookmark_outline'}</Icon>}
+                                    title={user && book.markedBy?.includes(user.uid) ? 'Убрать отметку' : 'Отложить книгу'}
+                                    disabled={!user}
+                                    onClick={handleBookmarkButtonClick}
+                                />
+                            </Badge>
+
+                            <Badge
+                                value={book.readBy && book.readBy.length}
+                                overlap
+                            >
+                                <IconButton
+                                    icon={<Icon>{user && book.readBy?.includes(user.uid) ? 'check_box' : 'check_box_outline_blank'}</Icon>}
+                                    title={user && book.readBy?.includes(user.uid) ? 'Убрать отметку' : 'Отметить книгу как прочитанную'}
+                                    onClick={handleReadButtonClick}
                                     disabled={!user}
                                 />
                             </Badge>
@@ -82,95 +107,13 @@ export default function BookPage({ match }) {
                 </LayoutGridCell>
 
                 <LayoutGridCell span="2">
-                    <img src={book.imageUrl} alt="" />
+                    <img className="book-cover" src={book.imageUrl} alt="" />
 
-                    <List twoLine>
-                        <ListItem title={book.authors.join(', ')}>
-                            <ListItemGraphic>
-                                <Icon>person</Icon>
-                            </ListItemGraphic>
-
-                            <ListItemText
-                                primary={book.authors.join(', ')}
-                                secondary={book.authors.length === 1 ? 'Автор' : 'Авторы'}
-                            />
-                        </ListItem>
-
-                        {book.publisher &&
-                            <ListItem
-                                element={Link}
-                                to={`/search?publisher=${encodeURIComponent(book.publisher)}`}
-                            >
-                                <ListItemGraphic>
-                                    <Icon>business</Icon>
-                                </ListItemGraphic>
-
-                                <ListItemText
-                                    primary={book.publisher}
-                                    secondary="Издатель"
-                                />
-                            </ListItem>
-                        }
-
-                        {book.edition &&
-                            <ListItem>
-                                <ListItemGraphic>
-                                    <Icon>mode_edit</Icon>
-                                </ListItemGraphic>
-
-                                <ListItemText
-                                    primary={`${book.edition}-е издание`}
-                                    secondary="Издание"
-                                />
-                            </ListItem>
-                        }
-
-                        {book.year &&
-                            <ListItem>
-                                <ListItemGraphic>
-                                    <Icon>event</Icon>
-                                </ListItemGraphic>
-
-                                <ListItemText
-                                    primary={book.year}
-                                    secondary="Год"
-                                />
-                            </ListItem>
-                        }
-
-                        {book.pages &&
-                            <ListItem>
-                                <ListItemGraphic>
-                                    <Icon>book</Icon>
-                                </ListItemGraphic>
-
-                                <ListItemText
-                                    primary={`${book.pages} страниц`}
-                                    secondary="Кол-во страниц"
-                                />
-                            </ListItem>
-                        }
-
-                        {book.original &&
-                            <ListItem
-                                element={Link}
-                                to={`/books/${book.original.slug}`}
-                            >
-                                <ListItemGraphic>
-                                    <Icon>link</Icon>
-                                </ListItemGraphic>
-
-                                <ListItemText
-                                    primary={book.original.title}
-                                    secondary="Оригинал"
-                                />
-                            </ListItem>
-                        }
-                    </List>
+                    <BookDetailsList book={book} />
                 </LayoutGridCell>
 
                 <LayoutGridCell span="10">
-                    <Typography>{book.description}</Typography>
+                    <div className="book-description mdc-typography" dangerouslySetInnerHTML={{ __html: md.render(book.description) }} />
 
                     <BookComments book={book} />
                 </LayoutGridCell>

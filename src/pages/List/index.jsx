@@ -6,9 +6,9 @@ import {
     Typography
 } from 'mdc-react';
 
-import { useStore } from 'hooks/store';
-import { actions as listActions } from 'store/lists';
-import BookCard from 'components/BookCard';
+import { useStore } from '@/hooks/store';
+import { actions as listActions } from '@/store/lists';
+import BookCard from '@/components/BookCard';
 
 import './index.scss';
 
