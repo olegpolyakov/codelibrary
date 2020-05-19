@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
-import auth, { signIn, signOut } from 'api/auth';
+import auth, { signIn, signOut } from '@/api/auth';
 
-import { useActions } from 'hooks/store';
+import { useSelector, useActions } from '@/hooks/store';
 
-import { getTopics } from 'store/topics';
-import { createBook } from 'store/books';
-import { getLists } from 'store/lists';
-import { login, logout} from 'store/user';
+import { getTopics } from '@/store/topics';
+import { getLists } from '@/store/lists';
+import { login, logout, getUser } from '@/store/user';
 
 import AppDrawer from './components/AppDrawer';
 import AppHeader from './components/AppHeader';
 import AppContent from './components/AppContent';
-import FormDialog from './components/FormDialog';
-import BookForm from './components/BookForm';
+import TopicList from './components/TopicList';
+
 import HomePage from './pages/Home';
 import TopicPage from './pages/Topic';
 import BookPage from './pages/Book';
@@ -25,21 +24,23 @@ import './App.scss';
 
 const actionsToBind = {
     getTopics,
-    createBook,
     getLists,
     login,
-    logout
+    logout,
+    getUser
 };
 
 export default function App() {
+    const topics = useSelector(state => state.topics);
+    const user = useSelector(state => state.user);
     const actions = useActions(actionsToBind);
-    const [isDrawerOpen, setDrawerOpen] = useState(true);
-    const [isDialogOpen, setDialogOpen] = useState(false);
+    const [isDrawerOpen, setDrawerOpen] = useState(false);
 
     useEffect(() => {
         auth.onAuthStateChanged(user => {
             if (user) {
-                actions.login(user)
+                actions.login(user);
+                actions.getUser(user.uid);
                 actions.getLists(user.uid);
             } else {
                 actions.logout();
@@ -49,22 +50,22 @@ export default function App() {
         actions.getTopics();
     }, [actions]);
 
-    function handleSubmit(data) {
-        actions.createBook(data).then(() => setDialogOpen(false));
-    }
-
     return (
         <div className="app">
             <AppHeader
                 onNavigationButtonClick={() => setDrawerOpen(isDrawerOpen => !isDrawerOpen)}
-                onAddButtonClick={() => setDialogOpen(true)}
                 onSignInButtonClick={signIn}
                 onSignOutButtonClick={signOut}
             />
 
             <AppDrawer
                 open={isDrawerOpen}
-            />
+            >
+                <TopicList
+                    topics={topics}
+                    user={user}
+                />
+            </AppDrawer>
 
             <AppContent className="mdc-top-app-bar--fixed-adjust">
                 <Switch>
@@ -75,17 +76,6 @@ export default function App() {
                     <Route path="/lists/:listId" component={ListPage} />
                 </Switch>
             </AppContent>
-
-            <FormDialog
-                form="book-form"
-                title="Новая книга"
-                open={isDialogOpen}
-                onClose={() => setDialogOpen(false)}
-            >
-                <BookForm
-                    onSubmit={handleSubmit}
-                />
-            </FormDialog>
         </div>
     );
 }
