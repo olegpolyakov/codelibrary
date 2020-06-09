@@ -16,7 +16,7 @@ export default function TopicList({ user, topics }) {
                 <ListItem
                     key={topic.id}
                     component={NavLink}
-                    to={`/${topic.id}`}
+                    to={`/topics/${topic.id}`}
                     activeClassName="mdc-list-item--activated"
                 >
                     <ListItemGraphic>
@@ -36,7 +36,7 @@ export default function TopicList({ user, topics }) {
                 <ListItem
                     key={topic.id}
                     component={NavLink}
-                    to={`/${topic.id}`}
+                    to={`/topics/${topic.id}`}
                     activeClassName="mdc-list-item--activated"
                 >
                     <ListItemGraphic>
