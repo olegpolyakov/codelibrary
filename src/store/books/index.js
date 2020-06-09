@@ -12,19 +12,19 @@ export default function reducer(state = {}, action) {
             return {
                 ...state,
                 list: []
-            }
+            };
 
         case 'GET_BOOK':
             return {
                 ...state,
                 single: action.payload.book
-            }
+            };
 
         case 'UNSET_BOOK':
             return {
                 ...state,
                 single: null
-            }
+            };
 
         case 'LIKE_BOOK':
         case 'MARK_BOOK':
@@ -33,7 +33,7 @@ export default function reducer(state = {}, action) {
                 ...state,
                 single: action.payload.book
             };
-            
+
         default:
             return state;
     }
@@ -61,6 +61,16 @@ export function searchBooks(params) {
 
 export function getBooksByTopic(topic) {
     return db.getBooksByTopic(topic)
+        .then(books => ({
+            type: 'GET_BOOKS',
+            payload: {
+                books
+            }
+        }));
+}
+
+export function getBooksByFilter(filter, userId) {
+    return db.getBooksByFilter(filter, userId)
         .then(books => ({
             type: 'GET_BOOKS',
             payload: {
@@ -98,7 +108,7 @@ export function likeBook(book, user) {
             book.likedBy.includes(userId) ?
                 book.likedBy.filter(id => id !== userId) :
                 book.likedBy.concat(userId)
-            ) : [userId]
+        ) : [userId]
     };
 
     return db.updateBook(book.id, data)
@@ -117,7 +127,7 @@ export function markBook(book, user) {
             book.markedBy.includes(userId) ?
                 book.markedBy.filter(id => id !== userId) :
                 book.markedBy.concat(userId)
-            ) : [userId]
+        ) : [userId]
     };
 
     return db.updateBook(book.id, data)
@@ -136,7 +146,7 @@ export function readBook(book, user) {
             book.readBy.includes(userId) ?
                 book.readBy.filter(id => id !== userId) :
                 book.readBy.concat(userId)
-            ) : [userId]
+        ) : [userId]
     };
 
     return db.updateBook(book.id, data)
@@ -153,6 +163,7 @@ export const actions = {
     unsetBooks,
     searchBooks,
     getBooksByTopic,
+    getBooksByFilter,
     getBook,
     unsetBook,
     likeBook,
