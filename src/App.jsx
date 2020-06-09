@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Switch, Route } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Switch, Route, useHistory } from 'react-router-dom';
 
 import auth, { signIn, signOut } from '@/api/auth';
 
@@ -12,12 +12,14 @@ import { login, logout, getUser } from '@/store/user';
 import AppDrawer from './components/AppDrawer';
 import AppHeader from './components/AppHeader';
 import AppContent from './components/AppContent';
+import FilterList from './components/FilterList';
 import TopicList from './components/TopicList';
 
 import HomePage from './pages/Home';
 import TopicPage from './pages/Topic';
 import BookPage from './pages/Book';
 import ListPage from './pages/List';
+import FilterPage from './pages/Filter';
 import SearchPage from './pages/Search';
 
 import './App.scss';
@@ -34,13 +36,13 @@ export default function App() {
     const topics = useSelector(state => state.topics);
     const user = useSelector(state => state.user);
     const actions = useActions(actionsToBind);
+    const history = useHistory();
     const [isDrawerOpen, setDrawerOpen] = useState(false);
 
     useEffect(() => {
         auth.onAuthStateChanged(user => {
             if (user) {
                 actions.login(user);
-                actions.getUser(user.uid);
                 actions.getLists(user.uid);
             } else {
                 actions.logout();
@@ -50,17 +52,26 @@ export default function App() {
         actions.getTopics();
     }, [actions]);
 
+    const handleSignOut = useCallback(() => {
+        signOut();
+        history.push('/');
+    }, [history]);
+
     return (
         <div className="app">
             <AppHeader
                 onNavigationButtonClick={() => setDrawerOpen(isDrawerOpen => !isDrawerOpen)}
                 onSignInButtonClick={signIn}
-                onSignOutButtonClick={signOut}
+                onSignOutButtonClick={handleSignOut}
             />
 
             <AppDrawer
                 open={isDrawerOpen}
             >
+                {user &&
+                    <FilterList />
+                }
+
                 <TopicList
                     topics={topics}
                     user={user}
@@ -71,7 +82,10 @@ export default function App() {
                 <Switch>
                     <Route exact path="/" component={HomePage} />
                     <Route exact path="/search" component={SearchPage} />
-                    <Route exact path="/:topicId" component={TopicPage} />
+                    {user &&
+                        <Route exact path="/:filter" component={FilterPage} />
+                    }
+                    <Route path="/topics/:topicId" component={TopicPage} />
                     <Route path="/books/:bookId" component={BookPage} />
                     <Route path="/lists/:listId" component={ListPage} />
                 </Switch>
