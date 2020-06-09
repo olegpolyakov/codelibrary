@@ -83,6 +83,12 @@ module.exports = env => {
             ]
         },
 
+        devServer: {
+            contentBase: path.join(__dirname, './'),
+            port: 3000,
+            historyApiFallback: true
+        },
+
         devtool: (env === 'development') ? 'eval-source-map' : undefined,
 
         plugins: [
