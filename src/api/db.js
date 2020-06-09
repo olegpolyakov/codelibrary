@@ -9,6 +9,12 @@ const operatorForField = {
     subtopics: 'array-contains',
 };
 
+const fieldForFilter = {
+    favorite: 'likedBy',
+    marked: 'markedBy',
+    read: 'readBy'
+};
+
 export function getUser(userId) {
     return db.collection('users')
         .doc(userId)
@@ -19,7 +25,7 @@ export function getUser(userId) {
 export function getTopics() {
     return db.collection('topics')
         .get()
-        .then(mapSnapshot);        
+        .then(mapSnapshot);
 }
 
 export function updateTopic(topicId, data) {
@@ -34,7 +40,7 @@ export function getBooks() {
     return db.collection('books')
         .limit(12)
         .get()
-        .then(mapSnapshot);        
+        .then(mapSnapshot);
 }
 
 export function getNewBooks() {
@@ -42,28 +48,15 @@ export function getNewBooks() {
         .limit(12)
         .orderBy('year', 'desc')
         .get()
-        .then(mapSnapshot);        
+        .then(mapSnapshot);
 }
 
-export function getFavoriteBooks(userId) {
-    return db.collection('books')
-        .where('likedBy', 'array-contains', userId)
-        .get()
-        .then(mapSnapshot);        
-}
 
-export function getReadBooks(userId) {
+export function getBooksByFilter(filter, userId) {
     return db.collection('books')
-        .where('markedBy', 'array-contains', userId)
+        .where(fieldForFilter[filter], 'array-contains', userId)
         .get()
-        .then(mapSnapshot);        
-}
-
-export function getCompletedBooks(userId) {
-    return db.collection('books')
-        .where('readBy', 'array-contains', userId)
-        .get()
-        .then(mapSnapshot);        
+        .then(mapSnapshot);
 }
 
 export function searchBooks(params = {}) {
@@ -73,14 +66,14 @@ export function searchBooks(params = {}) {
 
     return query
         .get()
-        .then(mapSnapshot);        
+        .then(mapSnapshot);
 }
 
 export function getBooksByTopic(topic) {
     return db.collection('books')
         .where('topics', 'array-contains', topic)
         .get()
-        .then(mapSnapshot);        
+        .then(mapSnapshot);
 }
 
 export function getBook(slug) {
@@ -114,7 +107,7 @@ export function getLists(userId) {
     return db.collection('lists')
         .where('userId', '==', userId)
         .get()
-        .then(mapSnapshot);        
+        .then(mapSnapshot);
 }
 
 export function getList(listId) {
