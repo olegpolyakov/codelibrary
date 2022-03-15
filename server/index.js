@@ -30,7 +30,7 @@ export default context => {
     return {
         listen() {
             return new Promise(resolve => {
-                server.listen(context.config.APP_PORT, context.env.APP_IP, () => {
+                server.listen(context.config.APP_PORT, context.config.APP_IP, () => {
                     console.log('Server started');
                     resolve();
                 });
