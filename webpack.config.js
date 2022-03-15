@@ -1,21 +1,21 @@
-const path = require('path');
-const webpack = require('webpack');
-const sass = require('sass');
-const dotenv = require('dotenv');
-const autoprefixer = require('autoprefixer')();
-const CssExtractPlugin = require('mini-css-extract-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+import path from 'path';
+import sass from 'sass';
+import dotenv from 'dotenv';
+import autoprefixer from 'autoprefixer';
+import webpack from 'webpack';
+import CssExtractPlugin from 'mini-css-extract-plugin';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 
 dotenv.config();
 
-module.exports = env => {
+export default env => {
     return {
         entry: {
-            'app': './src/index.js'
+            'app': './client/index.js'
         },
 
         output: {
-            path: path.resolve(__dirname, 'public'),
+            path: path.resolve('public'),
             filename: 'js/[name].js',
             publicPath: '/'
         },
@@ -25,10 +25,18 @@ module.exports = env => {
                 {
                     test: /\.jsx?$/,
                     exclude: /node_modules/,
+                    resolve: {
+                        fullySpecified: false
+                    },
                     use: {
                         loader: 'babel-loader',
                         options: {
-                            presets: ['@babel/preset-env', '@babel/preset-react']
+                            presets: [
+                                '@babel/preset-env',
+                                ['@babel/preset-react', {
+                                    'runtime': 'automatic'
+                                }]
+                            ]
                         }
                     }
                 },
@@ -63,7 +71,9 @@ module.exports = env => {
                         {
                             loader: 'postcss-loader',
                             options: {
-                                plugins: [autoprefixer]
+                                postcssOptions: {
+                                    plugins: [autoprefixer]
+                                }
                             }
                         },
                         {
@@ -84,7 +94,9 @@ module.exports = env => {
         },
 
         devServer: {
-            contentBase: path.join(__dirname, './'),
+            static: {
+                directory: path.resolve('public')
+            },
             port: 3000,
             historyApiFallback: true
         },
@@ -93,14 +105,13 @@ module.exports = env => {
 
         plugins: [
             new webpack.DefinePlugin({
-                'APP_ENV': JSON.stringify(env),
-                'FIREBASE_API_KEY': JSON.stringify(process.env.FIREBASE_API_KEY)
+                'APP_ENV': JSON.stringify(env)
             }),
             new CssExtractPlugin({
                 filename: 'css/[name].css'
             }),
             new HtmlWebpackPlugin({
-                template: path.resolve(__dirname, 'src', 'index.html'),
+                template: path.resolve('client', 'index.html'),
                 inject: 'head',
                 scriptLoading: 'defer',
                 hash: true
@@ -123,7 +134,7 @@ module.exports = env => {
             extensions: ['.js', '.jsx', '.json'],
 
             alias: {
-                '@': path.resolve(__dirname, 'src')
+                '@': path.resolve('client')
             }
         }
     };
