@@ -17,7 +17,7 @@
     "express": "^4.17.2",
     "express-session": "^1.17.2",
     "helmet": "^5.0.1",
-    "markdown-it": "^12.3.0",
+    "markdown-it": "^12.3.2",
     "mdc-react": "^1.0.0-beta.7",
     "mongoose": "^5.13.14",
     "morgan": "^1.10.0",
