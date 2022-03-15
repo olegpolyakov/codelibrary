@@ -1,0 +1,26 @@
+@use './variables';
+
+@mixin max-width($width) {
+    max-width: $width;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@mixin flex-container($direction: row, $spacing: flex-end, $alignment: null) {
+    display: flex;
+    flex-direction: $direction;
+    justify-content: $spacing;
+    align-content: $alignment;
+}
+
+@mixin breakpoint($point) {
+    $breakpoint: map-get(variables.$breakpoints, $point);
+
+    @if not $breakpoint {
+        @error 'Invalid breakpoint';
+    } @else {
+        @media #{$breakpoint} {
+            @content;
+        }
+    }
+}

@@ -1,0 +1,43 @@
+@use 'mdc-react/src/typography';
+
+#book-page {
+    img {
+        width: 100%;
+    }
+
+    .mdc-card {
+        overflow: hidden;
+
+        .mdc-card__actions {
+            .mdc-button {
+                width: 100%;
+            }
+        }
+    }
+
+    .mdc-badge {
+        margin: 0;
+        
+        &[data-badge="0"]::after {
+            display: none;
+        }
+    }
+
+    .book-description,
+    .book-contents {
+        p {
+            @include typography.typography(body1);
+            margin-top: 0;
+        }
+
+        li {
+            @include typography.typography(body1);
+        }
+    }
+
+    .book-contents {
+        ol {
+            padding-left: 1rem;
+        }
+    }
+}

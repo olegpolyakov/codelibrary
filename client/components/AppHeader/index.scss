@@ -1,0 +1,12 @@
+.app-header {
+    .mdc-top-app-bar__title {
+        a {
+            color: inherit;
+            text-decoration: none;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}

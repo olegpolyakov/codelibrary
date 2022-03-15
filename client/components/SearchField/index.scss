@@ -1,0 +1,20 @@
+@use '@material/textfield';
+@use '@material/textfield/icon';
+
+.search-field {
+    margin: 0 !important;
+    border-radius: 4px;
+    min-width: 275px;
+    
+    @include textfield.height(48px);
+    @include textfield.ink-color(rgba(255, 255, 255));
+    @include textfield.placeholder-color(rgba(255, 255, 255.6));
+    @include textfield.caret-color(rgba(255, 255, 255.8));
+    @include textfield.fill-color(rgba(255, 255, 255, .1));
+    @include icon.leading-icon-color(rgba(255, 255, 255.8));
+    @include icon.trailing-icon-color(rgba(255, 255, 255.8));
+
+    .mdc-line-ripple {
+        display: none;
+    }
+}

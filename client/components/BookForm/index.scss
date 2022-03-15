@@ -1,0 +1,17 @@
+.book-form {
+    .mdc-form-field {
+        padding: 8px 0;
+        margin-bottom: 1rem;
+    }
+
+    .mdc-select,
+    .mdc-text-field {
+        &:first-child {
+            margin-top: 8px;
+        }
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+}

@@ -1,0 +1,26 @@
+@use './variables';
+
+@use 'mdc-react' with (
+    $theme-primary: variables.$primary-color,
+    $theme-secondary: variables.$secondary-color,
+    $theme-background: variables.$background-color,
+    $typography-font-family: variables.$font-family,
+    $typography-styles-headline1: (
+        font-family: variables.$heading-font-family
+    ), 
+    $typography-styles-headline2: (
+        font-family: variables.$heading-font-family
+    ),
+    $typography-styles-headline3: (
+        font-family: variables.$heading-font-family
+    ),
+    $typography-styles-headline4: (
+        font-family: variables.$heading-font-family
+    ),
+    $typography-styles-headline5: (
+        font-family: variables.$heading-font-family
+    ),
+    $typography-styles-headline6: (
+        font-family: variables.$heading-font-family
+    )
+);
