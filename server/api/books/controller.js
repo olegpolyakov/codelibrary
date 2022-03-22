@@ -1,10 +1,32 @@
+const allowedFields = ['authors', 'publisher', 'topics', 'tags', 'language', 'level'];
+
 export default ({
     models: { Book }
 }) => ({
-    getMany: (req, res, next) => {
-        Book.find({ published: true, ...req.query })
+    search: (req, res, next) => {
+        const query = { ...req.query };
+        const page = req.query.page || 0;
+        const limit = 100;
+        const skip = page * limit;
+
+        if (query.search) {
+            const regex = new RegExp(req.query.search.trim(), 'i');
+
+            query.$or = [
+                { firstname: regex },
+                { lastname: regex },
+                { username: regex },
+                { email: regex }
+            ];
+
+            delete query.search;
+        }
+
+        Book.search(req.query.q)
             .select('slug title date documentFormat imageFormat')
+            .skip(skip)
             .sort({ date: -1 })
+            .limit(limit)
             .then(books => {
                 res.json({
                     ok: true,
@@ -14,13 +36,40 @@ export default ({
             .catch(next);
     },
 
+    getMany: (req, res, next) => {
+        const query = { ...req.query };
+
+        if (!req.user.isAdmin) {
+            query.published = true;
+        }
+
+        Book.find(query)
+            .select('slug title date documentFormat imageFormat')
+            .sort({ date: -1 })
+            .then(books => {
+                res.json({
+                    ok: true,
+                    data: books.map(book => book.toJSON({ user: req.user }))
+                });
+            })
+            .catch(next);
+    },
+
     getOne: (req, res, next) => {
-        Book.findOne({ slug: req.params.book, published: true })
-            //.populate('topics', 'title')
+        const query = {
+            slug: req.params.book
+        };
+
+        if (!req.user.isAdmin) {
+            query.published = true;
+        }
+
+        Book.findOne(query)
+            .populate('topics', 'title')
             .then(book => {
                 res.json({
                     ok: true,
-                    data: book
+                    data: book.toJSON({ user: req.user })
                 });
             })
             .catch(next);
@@ -74,15 +123,15 @@ export default ({
             $addToSet: {
                 likedBy: req.user.id
             }
-        }, {
-            new: true
-        }).then(book => {
+        }, { new: true }).then(book => {
+            if (!book) throw new Error('Книга не найдена');
+
             res.status(200).json({
                 ok: true,
                 data: {
                     id: book.id,
                     likes: book.likes,
-                    likedBy: book.likedBy
+                    liked: book.likedBy.includes(req.user.id)
                 }
             });
         }).catch(next);
@@ -91,9 +140,11 @@ export default ({
     removeLike: (req, res, next) => {
         Book.findByIdAndUpdate(req.params.book, {
             $pull: {
-                likes: req.user.id
+                likedBy: req.user.id
             }
-        }).then(book => {
+        }, { new: true }).then(book => {
+            if (!book) throw new Error('Книга не найдена');
+
             res.status(200).json({
                 ok: true,
                 data: {

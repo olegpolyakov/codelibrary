@@ -10,6 +10,8 @@ export default context => {
         .get(controller.getMany)
         .post(controller.create);
 
+    router.get('/search', controller.search);
+
     router.route('/:book')
         .get(controller.getOne)
         .put(controller.update)

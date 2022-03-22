@@ -36,5 +36,13 @@ export default ({
             console.error(error);
             next(error);
         }
+    },
+
+    logout: (req, res) => {
+        if (req.session) {
+            delete req.session.userId;
+        }
+
+        res.redirect('/');
     }
 });

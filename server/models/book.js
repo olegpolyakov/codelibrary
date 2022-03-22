@@ -17,16 +17,34 @@ const Book = new Schema({
     pages: { type: Number, min: 0, default: 0 },
     language: { type: String, enum: ['en', 'ru'] },
     level: { type: String, enum: ['beg', 'int', 'adv'] },
-    documentFormat: { type: String, default: 'pdf' },
-    imageFormat: { type: String, default: 'png' },
     pageUrl: String,
+    imageFormat: { type: String, default: 'png' },
+    documentFormat: { type: String, default: 'pdf' },
     likedBy: [{ type: Schema.Types.ObjectId, ref: 'User' }]
 }, {
     timestamps: false,
     toJSON: {
-        getters: true
+        getters: true,
+        transform: (book, object, { user }) => {
+            if (!user) return object;
+
+            object.liked = book.likedBy.includes(user.id);
+            object.marked = user.markedBooks.includes(book.id);
+            object.read = user.readBooks.includes(book.id);
+
+            return object;
+        }
     }
 });
+
+Book.statics.search = function(query) {
+    const regex = new RegExp(query, 'i');
+
+    return this.find({ published: true }).or([
+        { slug: regex },
+        { title: regex }
+    ]);
+};
 
 Book.virtual('url').get(function() {
     return this.slug && `/books/${this.slug}`;

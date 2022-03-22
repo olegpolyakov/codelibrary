@@ -6,6 +6,18 @@ const Topic = new Schema({
     _id: String,
     title: String,
     description: String
+}, {
+    toJSON: {
+        transform: (topic, object, { user }) => {
+            if (!user) return object;
+
+            if (user.markedTopics.includes(topic.id)) {
+                object.marked = true;
+            }
+
+            return object;
+        }
+    }
 });
 
 Topic.virtual('slug').get(function() {

@@ -16,6 +16,8 @@ export default context => {
 
     const indexFile = fs.readFileSync(path.resolve(context.config.PUBLIC_PATH, 'index.html'));
 
+    server.enable('trust proxy');
+
     server.use(express.static('public'));
     server.use(express.json());
     server.use(session(context));

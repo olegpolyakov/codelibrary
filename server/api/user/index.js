@@ -12,5 +12,9 @@ export default context => {
         .post(controller.addMarkedBook)
         .delete(controller.removeMarkedBook);
 
+    router.route('/books/read')
+        .post(controller.addReadBook)
+        .delete(controller.removeReadBook);
+
     return router;
 };

@@ -85,21 +85,14 @@ User.virtual('displayName').get(function() {
     }
 });
 
-User.virtual('gravatar').get(function() {
-    const size = 100;
-    const imageset = 'retro';
-    const rating = 'g';
-    const hash = crypto.createHash('md5').update(this.email || 'email@domain.com').digest('hex');
-
-    return `https://www.gravatar.com/avatar/${hash}?s=${size}&d=${imageset}&r=${rating}`;
-});
-
-User.virtual('photo').get(function() {
-    let photo = '';
-
-    if (!photo) photo = this.gravatar;
-
-    return photo;
+User.virtual('initials').get(function() {
+    if (this.firstname && this.lastname) {
+        return this.firstname[0] + this.lastname[0];
+    } else if (this.firstname) {
+        return this.firstname[0];
+    } else if (this.username) {
+        return this.username[0];
+    }
 });
 
 User.virtual('url').get(function() {
@@ -114,13 +107,6 @@ User.virtual('likedBooks', {
     ref: 'Book',
     localField: '_id',
     foreignField: 'likedBy',
-    justOne: false
-});
-
-User.virtual('dislikedBooks', {
-    ref: 'Book',
-    localField: '_id',
-    foreignField: 'dislikedBy',
     justOne: false
 });
 

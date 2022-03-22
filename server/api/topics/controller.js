@@ -17,7 +17,7 @@ export default ({
         Topic.find().sort({ _id: 1 })
             .then(topics => res.json({
                 ok: true,
-                data: topics
+                data: topics.map(topic => topic.toJSON({ user: req.user }))
             }))
             .catch(next);
     },
