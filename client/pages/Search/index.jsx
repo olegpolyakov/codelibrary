@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
     LayoutGrid,
     Typography
@@ -8,6 +8,7 @@ import { useStore } from '@/store/hooks';
 import { actions as bookActions } from '@/store/reducers/books';
 
 import Page from '@/components/Page';
+import LoadingIndicator from '@/components/LoadingIndicator';
 import BookCard from '@/components/BookCard';
 
 import './index.scss';
@@ -15,24 +16,34 @@ import './index.scss';
 export default function SearchPage({ location }) {
     const [books, actions] = useStore(state => state.books.list, bookActions);
 
-    useEffect(() => {
-        const params = location.search.slice(1).split('&').reduce((result, pair) => {
-            const [key, value] = pair.split('=');
-            result[key] = decodeURIComponent(value);
-            return result;
-        }, {});
+    const [isLoading, setLoading] = useState(false);
 
-        actions.getBooks(params);
+    useEffect(() => {
+        if (!location.search) return;
+
+        setLoading(true);
+
+        actions.unsetBooks();
+        actions.searchBooks(location.search)
+            .then(() => setLoading(false));
+
+        return () => actions.unsetBooks();
     }, [actions, location.search]);
+
+    const query = location.search.slice(3);
+
+    if (isLoading) return <LoadingIndicator />;
 
     return (
         <Page id="search-page">
             <LayoutGrid>
-                <LayoutGrid.Cell span="12">
-                    <Typography type="headline6" noMargin>Результаты поиска по запросу</Typography>
-                </LayoutGrid.Cell>
+                {query &&
+                    <LayoutGrid.Cell span="12">
+                        <Typography type="headline6" noMargin>Результаты поиска по запросу "{query}"</Typography>
+                    </LayoutGrid.Cell>
+                }
 
-                {books.map(book =>
+                {books?.map(book =>
                     <LayoutGrid.Cell key={book.id} span="2">
                         <BookCard
                             book={book}

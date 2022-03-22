@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Card, CardMedia } from 'mdc-react';
+import { Card } from 'mdc-react';
 
 import './index.scss';
 
@@ -10,8 +10,11 @@ export default function BookCard({ book }) {
             className="book-card"
             component={Link}
             to={`/books/${book.slug}`}
+            title={book.title}
         >
-            <CardMedia imageUrl={book.imageUrl} />
+            <Card.Media
+                imageUrl={book.imageUrl}
+            />
         </Card>
     );
 }

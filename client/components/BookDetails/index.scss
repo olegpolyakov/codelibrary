@@ -1,0 +1,7 @@
+.book-details {
+    .mdc-list-item {
+        &__content {
+            pointer-events: initial;
+        }
+    }
+}

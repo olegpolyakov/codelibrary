@@ -9,7 +9,7 @@ import {
     Typography
 } from 'mdc-react';
 
-import md from '@/utils/md';
+import { useBoolean } from '@/hooks/state';
 import { useStore } from '@/store/hooks';
 import { actions as bookActions } from '@/store/reducers/books';
 
@@ -19,16 +19,17 @@ import FormDialog from '@/components/FormDialog';
 import BookDetails from '@/components/BookDetails';
 import BookComments from '@/components/BookComments';
 import BookForm from '@/components/BookForm';
+import md from '@/utils/md';
 
 import './index.scss';
 
-export default function BookPage({ match }) {
+export default function BookPage({ history, match }) {
     const [{ book, user }, actions] = useStore(state => ({
         user: state.user,
         book: state.books.single
     }), bookActions);
 
-    const [isFormOpen, setFormOpen] = useState(false);
+    const [isFormOpen, toggleFormOpen] = useBoolean(false);
 
     useEffect(() => {
         actions.getBook(match.params.bookId);
@@ -36,25 +37,41 @@ export default function BookPage({ match }) {
         return () => actions.unsetBook();
     }, [actions, match.params.bookId]);
 
-    const handleSubmit = useCallback(data => {
-        actions.updateBook(book.id, data);
+    const handleUpdate = useCallback(data => {
+        actions.updateBook(book.id, data)
+            .then(() => toggleFormOpen(false));
+    }, [actions, book]);
+
+    const handleDelete = useCallback(() => {
+        if (confirm('Вы уверены что хотите удалить книгу?')) {
+            actions.deleteBook(book.id)
+                .then(() => history.push('/'));
+        }
     }, [actions, book]);
 
     const handleLikeButtonClick = useCallback(() => {
-        actions.likeBook(book.id);
-    }, [actions, book]);
+        if (book.liked) {
+            actions.unlikeBook(book.id);
+        } else {
+            actions.likeBook(book.id);
+        }
+    }, [actions, book, user]);
 
     const handleBookmarkButtonClick = useCallback(() => {
-        actions.markBook(book.id);
+        if (book.marked) {
+            actions.unmarkBook(book.id);
+        } else {
+            actions.markBook(book.id);
+        }
     }, [actions, book]);
 
     const handleReadButtonClick = useCallback(() => {
-        actions.readBook(book.id);
+        if (book.read) {
+            actions.unreadBook(book.id);
+        } else {
+            actions.readBook(book.id);
+        }
     }, [actions, book]);
-
-    const toggleForm = useCallback(() => {
-        setFormOpen(v => !v);
-    }, []);
 
     if (!book) return <LoadingIndicator />;
 
@@ -66,36 +83,44 @@ export default function BookPage({ match }) {
                         <Typography className="book-title" type="headline4" noMargin>{book.title}</Typography>
 
                         <Layout row alignItems="center">
-                            {user?.isAdmin &&
-                                <IconButton
-                                    icon="edit"
-                                    title="Редактировать книгу"
-                                    onClick={toggleForm}
-                                />
-                            }
-
                             <Badge value={book.likes} inset>
                                 <IconButton
-                                    icon={user && book.likedBy?.includes(user.id) ? 'thumb_up_alt' : 'thumb_up_off_alt'}
-                                    title={user && book.likedBy?.includes(user.id) ? 'Убрать отметку' : 'Отметить книгу как понравившуюся'}
-                                    onClick={handleLikeButtonClick}
+                                    icon={book.liked ? 'thumb_up_alt' : 'thumb_up_off_alt'}
+                                    title={book.liked ? 'Убрать отметку' : 'Отметить книгу как понравившуюся'}
                                     disabled={!user}
+                                    onClick={handleLikeButtonClick}
                                 />
                             </Badge>
 
                             <IconButton
-                                icon={user?.markedBooks.includes(book.id) ? 'bookmark' : 'bookmark_outline'}
-                                title={user?.markedBooks.includes(book.id) ? 'Отложена' : 'Отложить'}
+                                icon={book.marked ? 'bookmark' : 'bookmark_outline'}
+                                title={book.marked ? 'Отложена' : 'Отложить'}
                                 disabled={!user}
                                 onClick={handleBookmarkButtonClick}
                             />
 
                             <IconButton
-                                icon={user?.readBooks.includes(book.id) ? 'check_box' : 'check_box_outline_blank'}
-                                title={user?.readBooks.includes(book.id) ? 'Прочитана' : 'Не прочитана'}
+                                icon={book.read ? 'check_box' : 'check_box_outline_blank'}
+                                title={book.read ? 'Прочитана' : 'Не прочитана'}
                                 disabled={!user}
                                 onClick={handleReadButtonClick}
                             />
+
+                            {user?.isAdmin &&
+                                <>
+                                    <IconButton
+                                        icon="edit"
+                                        title="Редактировать книгу"
+                                        onClick={toggleFormOpen}
+                                    />
+
+                                    <IconButton
+                                        icon="delete"
+                                        title="Удалить книгу"
+                                        onClick={handleDelete}
+                                    />
+                                </>
+                            }
                         </Layout>
                     </Layout>
                 </LayoutGrid.Cell>
@@ -166,14 +191,14 @@ export default function BookPage({ match }) {
                 title="Редактирование книги"
                 persistent
                 open={isFormOpen}
-                onClose={toggleForm}
+                onClose={toggleFormOpen}
             >
                 <BookForm
                     id="book-form"
                     user={user}
                     book={book}
-                    onSubmit={handleSubmit}
-                    onClose={toggleForm}
+                    onSubmit={handleUpdate}
+                    onClose={toggleFormOpen}
                 />
             </FormDialog>
         </Page>

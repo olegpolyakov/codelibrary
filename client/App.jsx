@@ -1,9 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
-import { Switch, Route } from 'react-router-dom';
-import {
-    ListGroup
-} from 'mdc-react';
+import { useCallback, useEffect } from 'react';
+import { useHistory, Switch, Route } from 'react-router-dom';
 
+import { useBoolean } from '@/hooks/state';
 import { useSelector, useActions } from '@/store/hooks';
 import { getTopics } from '@/store/reducers/topics';
 import { createBook } from '@/store/reducers/books';
@@ -12,17 +10,17 @@ import { getUser } from '@/store/reducers/user';
 import AppDrawer from '@/components/AppDrawer';
 import AppHeader from '@/components/AppHeader';
 import AppContent from '@/components/AppContent';
-import FilterList from '@/components/FilterList';
-import TopicList from '@/components/TopicList';
-import FormDialog from '@/components/FormDialog';
 import BookForm from '@/components/BookForm';
+import FilterList from '@/components/FilterList';
+import FormDialog from '@/components/FormDialog';
+import TopicList from '@/components/TopicList';
 
-import HomePage from '@/pages/Home';
-import TopicPage from '@/pages/Topic';
 import BookPage from '@/pages/Book';
+import BooksPage from '@/pages/Books';
+import HomePage from '@/pages/Home';
 import ListPage from '@/pages/List';
-import FilterPage from '@/pages/Filter';
 import SearchPage from '@/pages/Search';
+import TopicPage from '@/pages/Topic';
 
 import './App.scss';
 
@@ -33,12 +31,14 @@ const actionsToBind = {
 };
 
 export default function App() {
+    const history = useHistory();
+
     const user = useSelector(state => state.user);
     const topics = useSelector(state => state.topics);
     const actions = useActions(actionsToBind);
 
-    const [isDrawerOpen, setDrawerOpen] = useState(true);
-    const [isFormOpen, setFormOpen] = useState(false);
+    const [isDrawerOpen, toggleDrawerOpen] = useBoolean(true);
+    const [isFormOpen, toggleFormOpen] = useBoolean(false);
 
     useEffect(() => {
         actions.getUser();
@@ -47,29 +47,25 @@ export default function App() {
 
     const handleCreateBook = useCallback(data => {
         actions.createBook(data)
-            .then(() => setFormOpen(false));
-    }, []);
+            .then(() => toggleFormOpen(false));
+    }, [actions]);
 
-    const toggleDrawer = useCallback(() => {
-        setDrawerOpen(isOpen => !isOpen);
-    }, []);
-
-    const toggleForm = useCallback(() => {
-        setFormOpen(isOpen => !isOpen);
-    }, []);
+    const handleSearch = useCallback(query => {
+        history.push(`/search?q=${query}`);
+    }, [history]);
 
     return (
         <div className="app">
             <AppHeader
-                onNavigationButtonClick={toggleDrawer}
-                onCreateButtonClick={toggleForm}
+                onNavigationButtonClick={toggleDrawerOpen}
+                onCreateButtonClick={toggleFormOpen}
+                onSearch={handleSearch}
             />
 
             <AppDrawer
                 open={isDrawerOpen}
             >
                 <TopicList
-                    user={user}
                     topics={topics}
                 />
             </AppDrawer>
@@ -79,21 +75,22 @@ export default function App() {
                     <Route exact path="/" component={HomePage} />
                     <Route exact path="/search" component={SearchPage} />
                     {user &&
-                        <Route exact path="/:filter" component={FilterPage} />
+                        <Route exact path="/books" component={BooksPage} />
                     }
-                    <Route path="/topics/:topic" component={TopicPage} />
                     <Route path="/books/:bookId" component={BookPage} />
                     <Route path="/lists/:listId" component={ListPage} />
+                    <Route path="/topics/:topic" component={TopicPage} />
                 </Switch>
             </AppContent>
 
             <FormDialog
                 title="Предложить книгу"
                 open={isFormOpen}
-                onClose={toggleForm}
+                onClose={toggleFormOpen}
             >
                 <BookForm
                     id="book-form"
+                    user={user}
                     onSubmit={handleCreateBook}
                 />
             </FormDialog>

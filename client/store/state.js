@@ -1,11 +1,11 @@
 export default {
     user: null,
     books: {
-        list: [],
+        list: null,
         single: null
     },
     lists: {
-        list: [],
+        list: null,
         single: null
     },
     topics: []

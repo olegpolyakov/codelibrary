@@ -1,10 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
-    Icon,
     IconButton,
     Layout,
-    LayoutGrid, LayoutGridCell,
-    TextField,
+    LayoutGrid,
     Typography
 } from 'mdc-react';
 
@@ -36,11 +34,11 @@ export default function TopicPage({ match }) {
     useEffect(() => {
         actions.unsetBooks();
         actions.getBooks({ topics: match.params.topic });
-    }, [actions, match.params.topic]);
+    }, [match.params.topic]);
 
     const handleMarkTopic = useCallback(() => {
         actions.markTopic(topic, user.uid);
-    }, [actions, topic, user]);
+    }, [topic, user]);
 
     if (!topic) return <LoadingIndicator />;
 
@@ -55,15 +53,15 @@ export default function TopicPage({ match }) {
     return (
         <Page id="topic-page">
             <LayoutGrid>
-                <LayoutGridCell span="9">
+                <LayoutGrid.Cell span="9">
                     <Typography className="topic-title" type="headline4">{topic.title}</Typography>
 
                     {topic.description &&
                         <Typography className="topic-description" type="body1" noMargin>{topic.description}</Typography>
                     }
-                </LayoutGridCell>
+                </LayoutGrid.Cell>
 
-                <LayoutGridCell span="3">
+                <LayoutGrid.Cell span="3">
                     <Layout row justifyContent="end">
                         <IconButton
                             icon={user?.markedTopics.includes(topic.id) ? 'bookmark' : 'bookmark_outline'}
@@ -78,14 +76,14 @@ export default function TopicPage({ match }) {
                             onClick={handleMarkTopic}
                         />
                     </Layout>
-                </LayoutGridCell>
+                </LayoutGrid.Cell>
 
-                {books.map(book =>
-                    <LayoutGridCell key={book.id} span="2">
+                {books?.map(book =>
+                    <LayoutGrid.Cell key={book.id} span="2">
                         <BookCard
                             book={book}
                         />
-                    </LayoutGridCell>
+                    </LayoutGrid.Cell>
                 )}
             </LayoutGrid>
         </Page>

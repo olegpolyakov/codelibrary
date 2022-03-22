@@ -1,61 +1,70 @@
 import { Link } from 'react-router-dom';
 import {
-    Chip, ChipSet,
-    List, ListItem
+    ChipSet, Chip,
+    List
 } from 'mdc-react';
 
 import { formatDate } from '@/utils/date';
+
+import './index.scss';
 
 export default function BookDetails({ book }) {
     return (
         <section className="book-details">
             <List>
-                <ListItem
-                    title={book.authors.join(', ')}
+                <List.Item
                     icon="person"
-                    primaryText={book.authors.join(', ')}
+                    content={book.authors.map(author =>
+                        <Link key={author} to={`/search?authors=${encodeURIComponent(author)}`} title={author}>{author}</Link>
+                    )}
+                    oneLine
                 />
 
                 {book.publisher &&
-                    <ListItem
-                        element={Link}
-                        to={`/search?publisher=${encodeURIComponent(book.publisher)}`}
+                    <List.Item
                         icon="business"
-                        primaryText={book.publisher}
+                        content={<Link to={`/search?publisher=${encodeURIComponent(book.publisher)}`}>{book.publisher}</Link>}
+                        oneLine
                     />
                 }
 
                 {book.edition &&
-                    <ListItem
+                    <List.Item
                         icon="edit"
                         primaryText={`${book.edition}-е издание`}
                     />
                 }
 
                 {book.date &&
-                    <ListItem
+                    <List.Item
                         icon="event"
                         primaryText={formatDate(book.date)}
                     />
                 }
 
                 {book.pages &&
-                    <ListItem
+                    <List.Item
                         icon="auto_stories"
                         primaryText={`${book.pages} страниц`}
                     />
                 }
 
-                <ListItem icon="label" oneLine content={<ChipSet>
-                    {book.topics.map(topic =>
-                        <Chip
-                            key={topic}
-                            text={topic}
-                        />
-                    )}
-                </ChipSet>}>
-
-                </ListItem>
+                {/* <List.Item
+                    icon="label"
+                    content={
+                        <ChipSet>
+                            {book.topics.map(topic =>
+                                <Chip
+                                    key={topic.id}
+                                    element={Link}
+                                    to={topic.url}
+                                    text={topic.title}
+                                />
+                            )}
+                        </ChipSet>
+                    }
+                    oneLine
+                /> */}
             </List>
         </section>
     );

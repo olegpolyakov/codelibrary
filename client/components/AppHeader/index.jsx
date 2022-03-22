@@ -1,27 +1,23 @@
-import { useCallback, useRef, useState } from 'react';
-import { Link, useRouteMatch } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
     Avatar,
+    Button,
+    Menu,
     Icon,
     IconButton,
     TopAppBar
 } from 'mdc-react';
 
+import { useBoolean } from '@/hooks/state';
 import { useStore } from '@/store/hooks';
 import SearchField from '@/components/SearchField';
 
 import './index.scss';
 
-export default function AppHeader({ onNavigationButtonClick, onCreateButtonClick }) {
-    const match = useRouteMatch('/:topicId');
-    const [{ topics, book, user }] = useStore(state => ({
-        topics: state.topics,
-        book: state.books.single,
-        user: state.user
-    }));
+export default function AppHeader({ onNavigationButtonClick, onCreateButtonClick, onSearch }) {
+    const [user] = useStore(state => state.user);
 
-    const topic = match && topics.find(topic => topic.id === match.params.topicId);
-    const title = (topic && ' › ' + topic.title) || (book && ' › ' + book.title) || '';
+    const [isMenuOpen, toggleMenuOpen] = useBoolean(false);
 
     return (
         <TopAppBar className="app-header" fixed>
@@ -37,7 +33,9 @@ export default function AppHeader({ onNavigationButtonClick, onCreateButtonClick
                 </TopAppBar.Section>
 
                 <TopAppBar.Section align="center">
-                    <SearchField />
+                    <SearchField
+                        onSubmit={onSearch}
+                    />
                 </TopAppBar.Section>
 
                 <TopAppBar.Section align="end">
@@ -53,16 +51,32 @@ export default function AppHeader({ onNavigationButtonClick, onCreateButtonClick
 
                     <TopAppBar.ActionItem>
                         {user ?
-                            <Avatar
-                                image={user.avatarUrl}
-                                size="medium"
-                            />
+                            <Menu
+                                anchor={
+                                    <Avatar
+                                        key="avatar"
+                                        image={user.avatarUrl}
+                                        size="medium"
+                                        onClick={toggleMenuOpen}
+                                    />
+                                }
+                                anchorOrigin={Menu.Origin.TOP_RIGHT}
+                                transformOrigin={Menu.Origin.TOP_RIGHT}
+                                open={isMenuOpen}
+                                onClose={toggleMenuOpen}
+                            >
+                                <Menu.Item
+                                    element="a"
+                                    href="/auth/logout"
+                                    text="Выйти"
+                                />
+                            </Menu>
+
                             :
-                            <IconButton
+                            <Button
                                 element="a"
                                 href="/auth"
-                                icon="person"
-                                title="Войти"
+                                text="Войти"
                             />
                         }
                     </TopAppBar.ActionItem>

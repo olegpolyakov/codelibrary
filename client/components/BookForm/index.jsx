@@ -19,7 +19,7 @@ import './index.scss';
 const defaultBook = {
     title: '',
     slug: '',
-    authors: '',
+    authors: [],
     publisher: '',
     description: '',
     contents: '',
@@ -47,21 +47,24 @@ const documentFormats = [
     { id: 'epub', label: 'EPUB' }
 ];
 
-export default function BookForm({ book = {}, user, onSubmit, ...props }) {
+function getData(book) {
+    return {
+        ...book,
+        authors: book.authors.join(', ')
+    };
+}
+
+export default function BookForm({ user, book = defaultBook, onSubmit, ...props }) {
     const topics = useSelector(state => state.topics);
 
-    const [data, setData] = useState({
-        ...defaultBook,
-        ...book
-    }, [book.id]);
+    const [data, setData] = useState(getData(book), [book.id]);
 
     const handleSubmit = useCallback(() => {
-        setData(data => {
-            data.authors = data.authors.split(',').map(part => part.trim());
-            onSubmit(data);
-            return data;
+        onSubmit({
+            ...data,
+            authors: data.authors.split(',').map(part => part.trim())
         });
-    }, [onSubmit]);
+    }, [data, onSubmit]);
 
     const handleChange = useCallback((event, value) => {
         event.stopPropagation();
@@ -97,7 +100,7 @@ export default function BookForm({ book = {}, user, onSubmit, ...props }) {
                 value={data.title}
                 outlined
                 onChange={handleChange}
-                onBlur={handleTitleBlur}
+            //onBlur={handleTitleBlur}
             />
 
             <TextField

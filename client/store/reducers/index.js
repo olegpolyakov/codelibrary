@@ -1,13 +1,13 @@
 import { combineReducers } from 'redux';
 
-import user from './user';
 import books from './books';
 import lists from './lists';
 import topics from './topics';
+import user from './user';
 
 export default combineReducers({
-    user,
     books,
     lists,
-    topics
+    topics,
+    user
 });
