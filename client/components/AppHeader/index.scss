@@ -1,3 +1,5 @@
+@use 'mdc-react/src/button';
+
 .app-header {
     .mdc-top-app-bar__title {
         a {
@@ -12,5 +14,9 @@
 
     .mdc-top-app-bar__action-item {
         cursor: pointer;
+
+        .mdc-button {
+            @include button.filled-accessible(#263238);
+        }
     }
 }

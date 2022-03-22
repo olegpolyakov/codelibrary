@@ -71,12 +71,11 @@ export default function AppHeader({ onNavigationButtonClick, onCreateButtonClick
                                     text="Выйти"
                                 />
                             </Menu>
-
                             :
                             <Button
                                 element="a"
                                 href="/auth"
-                                text="Войти"
+                                label="Войти"
                             />
                         }
                     </TopAppBar.ActionItem>
