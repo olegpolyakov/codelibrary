@@ -39,7 +39,7 @@ export default ({
     getMany: (req, res, next) => {
         const query = { ...req.query };
 
-        if (!req.user.isAdmin) {
+        if (!req.user?.isAdmin) {
             query.published = true;
         }
 
