@@ -1,0 +1,11 @@
+.page-content {
+    padding: 1rem;
+
+    > .mdc-layout-grid {
+        padding: 0;
+
+        .mdc-layout-grid__inner {
+            gap: 16px;
+        }
+    }
+}

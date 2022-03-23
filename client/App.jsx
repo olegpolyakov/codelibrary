@@ -74,9 +74,7 @@ export default function App() {
                 <Switch>
                     <Route exact path="/" component={HomePage} />
                     <Route exact path="/search" component={SearchPage} />
-                    {user &&
-                        <Route exact path="/books" component={BooksPage} />
-                    }
+                    <Route exact path="/books" component={BooksPage} />
                     <Route path="/books/:bookId" component={BookPage} />
                     <Route path="/lists/:listId" component={ListPage} />
                     <Route path="/topics/:topic" component={TopicPage} />

@@ -15,7 +15,7 @@ export default function BookDetails({ book }) {
                 <List.Item
                     icon="person"
                     content={book.authors.map(author =>
-                        <Link key={author} to={`/search?authors=${encodeURIComponent(author)}`} title={author}>{author}</Link>
+                        <Link key={author} to={`/books?authors=${encodeURIComponent(author)}`} title={author}>{author}</Link>
                     )}
                     oneLine
                 />
@@ -23,7 +23,7 @@ export default function BookDetails({ book }) {
                 {book.publisher &&
                     <List.Item
                         icon="business"
-                        content={<Link to={`/search?publisher=${encodeURIComponent(book.publisher)}`}>{book.publisher}</Link>}
+                        content={<Link to={`/books?publisher=${encodeURIComponent(book.publisher)}`}>{book.publisher}</Link>}
                         oneLine
                     />
                 }
@@ -49,7 +49,7 @@ export default function BookDetails({ book }) {
                     />
                 }
 
-                {/* <List.Item
+                <List.Item
                     icon="label"
                     content={
                         <ChipSet>
@@ -64,7 +64,7 @@ export default function BookDetails({ book }) {
                         </ChipSet>
                     }
                     oneLine
-                /> */}
+                />
             </List>
         </section>
     );

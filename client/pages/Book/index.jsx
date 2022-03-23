@@ -1,10 +1,9 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import {
     Badge,
     Button,
     Card,
     IconButton,
-    Layout,
     LayoutGrid,
     Typography
 } from 'mdc-react';
@@ -13,12 +12,15 @@ import { useBoolean } from '@/hooks/state';
 import { useStore } from '@/store/hooks';
 import { actions as bookActions } from '@/store/reducers/books';
 
-import Page from '@/components/page';
-import LoadingIndicator from '@/components/LoadingIndicator';
-import FormDialog from '@/components/FormDialog';
-import BookDetails from '@/components/BookDetails';
 import BookComments from '@/components/BookComments';
+import BookDetails from '@/components/BookDetails';
 import BookForm from '@/components/BookForm';
+import FormDialog from '@/components/FormDialog';
+import LoadingIndicator from '@/components/LoadingIndicator';
+import Page from '@/components/Page';
+import PageHeader from '@/components/PageHeader';
+import PageContent from '@/components/PageContent';
+
 import md from '@/utils/md';
 
 import './index.scss';
@@ -77,115 +79,114 @@ export default function BookPage({ history, match }) {
 
     return (
         <Page id="book-page">
-            <LayoutGrid>
-                <LayoutGrid.Cell span="12">
-                    <Layout row justifyContent="between">
-                        <Typography className="book-title" type="headline4" noMargin>{book.title}</Typography>
+            <PageHeader
+                title={book.title}
+                actions={<>
+                    <Badge value={book.likes} inset>
+                        <IconButton
+                            icon={book.liked ? 'thumb_up_alt' : 'thumb_up_off_alt'}
+                            title={book.liked ? 'Убрать отметку' : 'Отметить книгу как понравившуюся'}
+                            disabled={!user}
+                            onClick={handleLikeButtonClick}
+                        />
+                    </Badge>
 
-                        <Layout row alignItems="center">
-                            <Badge value={book.likes} inset>
-                                <IconButton
-                                    icon={book.liked ? 'thumb_up_alt' : 'thumb_up_off_alt'}
-                                    title={book.liked ? 'Убрать отметку' : 'Отметить книгу как понравившуюся'}
-                                    disabled={!user}
-                                    onClick={handleLikeButtonClick}
-                                />
-                            </Badge>
+                    <IconButton
+                        icon={book.marked ? 'bookmark' : 'bookmark_outline'}
+                        title={book.marked ? 'Отложена' : 'Отложить'}
+                        disabled={!user}
+                        onClick={handleBookmarkButtonClick}
+                    />
 
+                    <IconButton
+                        icon={book.read ? 'check_box' : 'check_box_outline_blank'}
+                        title={book.read ? 'Прочитана' : 'Не прочитана'}
+                        disabled={!user}
+                        onClick={handleReadButtonClick}
+                    />
+
+                    {user?.isAdmin &&
+                        <>
                             <IconButton
-                                icon={book.marked ? 'bookmark' : 'bookmark_outline'}
-                                title={book.marked ? 'Отложена' : 'Отложить'}
-                                disabled={!user}
-                                onClick={handleBookmarkButtonClick}
+                                icon="edit"
+                                title="Редактировать книгу"
+                                onClick={toggleFormOpen}
                             />
 
                             <IconButton
-                                icon={book.read ? 'check_box' : 'check_box_outline_blank'}
-                                title={book.read ? 'Прочитана' : 'Не прочитана'}
-                                disabled={!user}
-                                onClick={handleReadButtonClick}
+                                icon="delete"
+                                title="Удалить книгу"
+                                onClick={handleDelete}
                             />
+                        </>
+                    }
+                </>}
+            />
 
-                            {user?.isAdmin &&
+            <PageContent>
+                <LayoutGrid>
+                    <LayoutGrid.Cell span="3" grid>
+                        <LayoutGrid.Cell span="12">
+                            <Card>
+                                <img className="book-cover" src={book.imageUrl} alt="" />
+                            </Card>
+                        </LayoutGrid.Cell>
+
+                        <LayoutGrid.Cell span="12">
+                            <Card>
+                                <Card.Header title="Детали" />
+
+                                <Card.Section>
+                                    <BookDetails book={book} />
+                                </Card.Section>
+
+                                <Card.Actions>
+                                    {book.pageUrl &&
+                                        <Button
+                                            element="a"
+                                            href={book.pageUrl}
+                                            target="_blank"
+                                            label="Подробнее"
+                                            icon="exit_to_app"
+                                            outlined
+                                        />
+                                    }
+                                </Card.Actions>
+                            </Card>
+                        </LayoutGrid.Cell>
+                    </LayoutGrid.Cell>
+
+                    <LayoutGrid.Cell span="9" grid>
+                        <LayoutGrid.Cell span="12">
+                            <Card>
+                                <Card.Header title="Описание" />
+
+                                <Card.Section secondary>
+                                    <section className="book-description" dangerouslySetInnerHTML={{ __html: md.render(book.description) }} />
+                                </Card.Section>
+                            </Card>
+
+                            {book.contents &&
                                 <>
-                                    <IconButton
-                                        icon="edit"
-                                        title="Редактировать книгу"
-                                        onClick={toggleFormOpen}
-                                    />
+                                    <Typography type="headline6" noMargin>Содержание</Typography>
 
-                                    <IconButton
-                                        icon="delete"
-                                        title="Удалить книгу"
-                                        onClick={handleDelete}
-                                    />
+                                    <section className="book-contents" dangerouslySetInnerHTML={{ __html: md.render(book.contents) }} />
                                 </>
                             }
-                        </Layout>
-                    </Layout>
-                </LayoutGrid.Cell>
+                        </LayoutGrid.Cell>
 
-                <LayoutGrid.Cell span="3" grid>
-                    <LayoutGrid.Cell span="12">
-                        <Card>
-                            <img className="book-cover" src={book.imageUrl} alt="" />
-                        </Card>
+                        <LayoutGrid.Cell span="12">
+                            <Card>
+                                <Card.Header title="Комментарии" />
+
+                                <Card.Section secondary>
+                                    <BookComments book={book} />
+                                </Card.Section>
+                            </Card>
+                        </LayoutGrid.Cell>
                     </LayoutGrid.Cell>
-
-                    <LayoutGrid.Cell span="12">
-                        <Card>
-                            <Card.Header title="Детали" />
-
-                            <Card.Section>
-                                <BookDetails book={book} />
-                            </Card.Section>
-
-                            <Card.Actions>
-                                {book.pageUrl &&
-                                    <Button
-                                        element="a"
-                                        href={book.pageUrl}
-                                        target="_blank"
-                                        label="Подробнее"
-                                        icon="exit_to_app"
-                                        outlined
-                                    />
-                                }
-                            </Card.Actions>
-                        </Card>
-                    </LayoutGrid.Cell>
-                </LayoutGrid.Cell>
-
-                <LayoutGrid.Cell span="9" grid>
-                    <LayoutGrid.Cell span="12">
-                        <Card>
-                            <Card.Header title="Описание" />
-
-                            <Card.Section secondary>
-                                <section className="book-description" dangerouslySetInnerHTML={{ __html: md.render(book.description) }} />
-                            </Card.Section>
-                        </Card>
-
-                        {book.contents &&
-                            <>
-                                <Typography type="headline6" noMargin>Содержание</Typography>
-
-                                <section className="book-contents" dangerouslySetInnerHTML={{ __html: md.render(book.contents) }} />
-                            </>
-                        }
-                    </LayoutGrid.Cell>
-
-                    <LayoutGrid.Cell span="12">
-                        <Card>
-                            <Card.Header title="Комментарии" />
-
-                            <Card.Section secondary>
-                                <BookComments book={book} />
-                            </Card.Section>
-                        </Card>
-                    </LayoutGrid.Cell>
-                </LayoutGrid.Cell>
-            </LayoutGrid>
+                </LayoutGrid>
+            </PageContent>
 
             <FormDialog
                 title="Редактирование книги"

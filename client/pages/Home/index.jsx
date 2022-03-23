@@ -9,6 +9,9 @@ import { useStore } from '@/store/hooks';
 import { actions as bookActions } from '@/store/reducers/books';
 
 import BookCard from '@/components/BookCard';
+import LoadingIndicator from '@/components/LoadingIndicator';
+import Page from '@/components/Page';
+import PageContent from '@/components/PageContent';
 
 import './index.scss';
 
@@ -21,21 +24,25 @@ export default function HomePage() {
         }
     }, [books, actions]);
 
-    return (
-        <Layout id="home-page" className="page">
-            <LayoutGrid>
-                <LayoutGridCell span="12">
-                    <Typography variant="headline6" noMargin>Недавно добавленные</Typography>
-                </LayoutGridCell>
+    if (!books) return <LoadingIndicator />;
 
-                {books?.map(book =>
-                    <LayoutGridCell key={book.id} span="2">
-                        <BookCard
-                            book={book}
-                        />
+    return (
+        <Page id="home-page">
+            <PageContent>
+                <LayoutGrid>
+                    <LayoutGridCell span="12">
+                        <Typography variant="headline6" noMargin>Недавно добавленные</Typography>
                     </LayoutGridCell>
-                )}
-            </LayoutGrid>
-        </Layout>
+
+                    {books?.map(book =>
+                        <LayoutGridCell key={book.id} span="2">
+                            <BookCard
+                                book={book}
+                            />
+                        </LayoutGridCell>
+                    )}
+                </LayoutGrid>
+            </PageContent>
+        </Page>
     );
 }

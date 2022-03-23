@@ -1,18 +1,18 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
     IconButton,
-    Layout,
-    LayoutGrid,
-    Typography
+    LayoutGrid
 } from 'mdc-react';
 
 import { useStore } from '@/store/hooks';
 import { actions as bookActions } from '@/store/reducers/books';
 import { actions as topicActions } from '@/store/reducers/topics';
 
-import Page from '@/components/Page';
-import LoadingIndicator from '@/components/LoadingIndicator';
 import BookCard from '@/components/BookCard';
+import LoadingIndicator from '@/components/LoadingIndicator';
+import Page from '@/components/Page';
+import PageContent from '@/components/PageContent';
+import PageHeader from '@/components/PageHeader';
 
 import './index.scss';
 
@@ -37,7 +37,7 @@ export default function TopicPage({ match }) {
     }, [match.params.topic]);
 
     const handleMarkTopic = useCallback(() => {
-        actions.markTopic(topic, user.uid);
+        actions.markTopic(topic);
     }, [topic, user]);
 
     if (!topic) return <LoadingIndicator />;
@@ -52,40 +52,36 @@ export default function TopicPage({ match }) {
 
     return (
         <Page id="topic-page">
-            <LayoutGrid>
-                <LayoutGrid.Cell span="9">
-                    <Typography className="topic-title" type="headline4">{topic.title}</Typography>
+            <PageHeader
+                title={topic.title}
+                description={topic.description}
+                actions={<>
+                    {/* <IconButton
+                        icon={user?.markedTopics.includes(topic.id) ? 'bookmark' : 'bookmark_outline'}
+                        title={user?.markedTopics.includes(topic.id) ? 'Отметить тему' : 'Отменить отметку'}
+                        onClick={handleMarkTopic}
+                        disabled={!user}
+                    />
 
-                    {topic.description &&
-                        <Typography className="topic-description" type="body1" noMargin>{topic.description}</Typography>
-                    }
-                </LayoutGrid.Cell>
+                    <IconButton
+                        icon="tune"
+                        title="Фильтры и сортировка"
+                        onClick={handleMarkTopic}
+                    /> */}
+                </>}
+            />
 
-                <LayoutGrid.Cell span="3">
-                    <Layout row justifyContent="end">
-                        <IconButton
-                            icon={user?.markedTopics.includes(topic.id) ? 'bookmark' : 'bookmark_outline'}
-                            title={user?.markedTopics.includes(topic.id) ? 'Отметить тему' : 'Отменить отметку'}
-                            onClick={handleMarkTopic}
-                            disabled={!user}
-                        />
-
-                        <IconButton
-                            icon="tune"
-                            title="Фильтры и сортировка"
-                            onClick={handleMarkTopic}
-                        />
-                    </Layout>
-                </LayoutGrid.Cell>
-
-                {books?.map(book =>
-                    <LayoutGrid.Cell key={book.id} span="2">
-                        <BookCard
-                            book={book}
-                        />
-                    </LayoutGrid.Cell>
-                )}
-            </LayoutGrid>
+            <PageContent>
+                <LayoutGrid>
+                    {books?.map(book =>
+                        <LayoutGrid.Cell key={book.id} span="2">
+                            <BookCard
+                                book={book}
+                            />
+                        </LayoutGrid.Cell>
+                    )}
+                </LayoutGrid>
+            </PageContent>
         </Page>
     );
 }

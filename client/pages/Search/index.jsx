@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
 import {
-    LayoutGrid,
-    Typography
+    LayoutGrid
 } from 'mdc-react';
 
 import { useStore } from '@/store/hooks';
 import { actions as bookActions } from '@/store/reducers/books';
 
-import Page from '@/components/Page';
-import LoadingIndicator from '@/components/LoadingIndicator';
 import BookCard from '@/components/BookCard';
+import LoadingIndicator from '@/components/LoadingIndicator';
+import Page from '@/components/Page';
+import PageContent from '@/components/PageContent';
+import PageHeader from '@/components/PageHeader';
 
 import './index.scss';
 
@@ -36,21 +37,23 @@ export default function SearchPage({ location }) {
 
     return (
         <Page id="search-page">
-            <LayoutGrid>
-                {query &&
-                    <LayoutGrid.Cell span="12">
-                        <Typography type="headline6" noMargin>Результаты поиска по запросу "{query}"</Typography>
-                    </LayoutGrid.Cell>
-                }
+            {query &&
+                <PageHeader
+                    title={`Результаты поиска по запросу "${query}"`}
+                />
+            }
 
-                {books?.map(book =>
-                    <LayoutGrid.Cell key={book.id} span="2">
-                        <BookCard
-                            book={book}
-                        />
-                    </LayoutGrid.Cell>
-                )}
-            </LayoutGrid>
+            <PageContent>
+                <LayoutGrid>
+                    {books?.map(book =>
+                        <LayoutGrid.Cell key={book.id} span="2">
+                            <BookCard
+                                book={book}
+                            />
+                        </LayoutGrid.Cell>
+                    )}
+                </LayoutGrid>
+            </PageContent>
         </Page>
     );
 }
