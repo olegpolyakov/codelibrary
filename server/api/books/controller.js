@@ -60,7 +60,7 @@ export default ({
             slug: req.params.book
         };
 
-        if (!req.user.isAdmin) {
+        if (!req.user?.isAdmin) {
             query.published = true;
         }
 
