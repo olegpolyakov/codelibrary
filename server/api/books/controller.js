@@ -49,7 +49,7 @@ export default ({
             .then(books => {
                 res.json({
                     ok: true,
-                    data: books.map(book => book.toJSON({ user: req.user }))
+                    data: books
                 });
             })
             .catch(next);
