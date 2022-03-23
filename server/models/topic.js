@@ -29,7 +29,7 @@ Topic.virtual('url').get(function() {
 });
 
 Topic.virtual('imageUrl').get(function() {
-    return `${process.env.STORAGE_URL}/img/topics/${this._id}.svg`;
+    return `${process.env.STORAGE_URL}/topics/${this._id}.png`;
 });
 
 Topic.virtual('books', {

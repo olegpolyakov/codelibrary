@@ -28,7 +28,7 @@ export default function TopicList({ topics }) {
                         to={`/topics/${topic.id}`}
                         activeClassName="mdc-list-item--activated"
                         icon={
-                            <Avatar key={topic.id} image={`https://static.codedojo.ru/assets/images/topics/${topic.id}.png`} size="small" />
+                            <Avatar key={topic.id} image={topic.imageUrl} size="small" />
                         }
                         text={topic.title}
                     />
