@@ -1,6 +1,24 @@
+@use 'styles/mixins';
+
 .page-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 1rem;
+
+    &__actions {
+        @include mixins.media-query(sm) {
+            position: fixed;
+            display: flex;
+            justify-content: space-around;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 8px 16px;
+            background-color: white;
+            box-sizing: border-box;
+            border-top: 1px solid rgba(0, 0, 0, .125);
+            z-index: 1;
+        }
+    }
 }

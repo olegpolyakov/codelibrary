@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
     Badge,
     Button,
@@ -9,9 +9,8 @@ import {
 } from 'mdc-react';
 
 import { useBoolean } from '@/hooks/state';
-import { useStore } from '@/store/hooks';
-import { actions as bookActions } from '@/store/reducers/books';
-
+import { useStore } from '@/hooks/store';
+import { actions as bookActions } from '@/store/modules/books';
 import BookComments from '@/components/BookComments';
 import BookDetails from '@/components/BookDetails';
 import BookForm from '@/components/BookForm';
@@ -20,7 +19,6 @@ import LoadingIndicator from '@/components/LoadingIndicator';
 import Page from '@/components/Page';
 import PageHeader from '@/components/PageHeader';
 import PageContent from '@/components/PageContent';
-
 import md from '@/utils/md';
 
 import './index.scss';
@@ -31,6 +29,7 @@ export default function BookPage({ history, match }) {
         book: state.books.single
     }), bookActions);
 
+    const [clicks, setClicks] = useState(0);
     const [isFormOpen, toggleFormOpen] = useBoolean(false);
 
     useEffect(() => {
@@ -82,6 +81,17 @@ export default function BookPage({ history, match }) {
             <PageHeader
                 title={book.title}
                 actions={<>
+                    {book.documentUrl &&
+                        <IconButton
+                            element={user ? 'a' : 'button'}
+                            target={user ? '_blank' : undefined}
+                            href={user ? book.documentUrl : undefined}
+                            icon="local_library"
+                            title="Читать книгу"
+                            disabled={!user}
+                        />
+                    }
+
                     <Badge value={book.likes} inset>
                         <IconButton
                             icon={book.liked ? 'thumb_up_alt' : 'thumb_up_off_alt'}
@@ -125,15 +135,13 @@ export default function BookPage({ history, match }) {
 
             <PageContent>
                 <LayoutGrid>
-                    <LayoutGrid.Cell span="3" grid>
+                    <LayoutGrid.Cell desktop="3" tablet="4" phone="4" grid>
                         <LayoutGrid.Cell span="12">
                             <Card>
-                                <img className="book-cover" src={book.imageUrl} alt="" />
-                            </Card>
-                        </LayoutGrid.Cell>
+                                <Card.Media>
+                                    <img className="book-cover" src={book.imageUrl} alt={`Обложка ${book.title}`} />
+                                </Card.Media>
 
-                        <LayoutGrid.Cell span="12">
-                            <Card>
                                 <Card.Header title="Детали" />
 
                                 <Card.Section>
@@ -156,7 +164,7 @@ export default function BookPage({ history, match }) {
                         </LayoutGrid.Cell>
                     </LayoutGrid.Cell>
 
-                    <LayoutGrid.Cell span="9" grid>
+                    <LayoutGrid.Cell desktop="9" tablet="4" phone="4" grid>
                         <LayoutGrid.Cell span="12">
                             <Card>
                                 <Card.Header title="Описание" />

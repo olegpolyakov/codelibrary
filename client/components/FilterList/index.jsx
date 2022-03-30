@@ -1,8 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import {
-    List, ListItem
-} from 'mdc-react';
+import { List } from 'mdc-react';
 
 const items = [
     { url: '/books/liked', text: 'Понравившиеся', icon: 'thumb_up_alt' },
@@ -14,7 +12,7 @@ export default function FilterList({ user }) {
     return (
         <List>
             {items.map(item =>
-                <ListItem
+                <List.Item
                     key={item.url}
                     component={NavLink}
                     to={item.url}

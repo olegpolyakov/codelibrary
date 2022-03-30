@@ -13,7 +13,7 @@
     align-content: $alignment;
 }
 
-@mixin breakpoint($point) {
+@mixin media-query($point) {
     $breakpoint: map-get(variables.$breakpoints, $point);
 
     @if not $breakpoint {

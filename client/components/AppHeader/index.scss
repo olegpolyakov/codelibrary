@@ -1,4 +1,5 @@
 @use 'mdc-react/src/button';
+@use 'styles/mixins';
 
 .app-header {
     .mdc-top-app-bar__title {
@@ -9,6 +10,10 @@
             &:hover {
                 text-decoration: underline;
             }
+        }
+
+        @include mixins.media-query(sm) {
+            display: none;
         }
     }
 

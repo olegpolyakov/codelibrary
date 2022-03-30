@@ -8,6 +8,10 @@
     .mdc-card {
         overflow: hidden;
 
+        .mdc-card__media-content {
+            position: static;
+        }
+
         .mdc-card__actions {
             .mdc-button {
                 width: 100%;

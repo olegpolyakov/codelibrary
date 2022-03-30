@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import {
     Avatar,
-    List, ListItem, ListGroup
+    List
 } from 'mdc-react';
 
 export default function TopicList({ topics }) {
@@ -19,21 +19,21 @@ export default function TopicList({ topics }) {
     }, {});
 
     return (
-        <ListGroup>
+        <List.Group>
             <List>
                 {topics.map(topic =>
-                    <ListItem
+                    <List.Item
                         key={topic.id}
                         component={NavLink}
                         to={`/topics/${topic.id}`}
                         activeClassName="mdc-list-item--activated"
-                        icon={
-                            <Avatar key={topic.id} image={topic.imageUrl} size="small" />
+                        avatar={
+                            <Avatar key={topic.id} image={topic.imageUrl} size="medium" />
                         }
                         text={topic.title}
                     />
                 )}
             </List>
-        </ListGroup>
+        </List.Group>
     );
 }

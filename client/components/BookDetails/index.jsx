@@ -1,8 +1,5 @@
 import { Link } from 'react-router-dom';
-import {
-    ChipSet, Chip,
-    List
-} from 'mdc-react';
+import { List } from 'mdc-react';
 
 import { formatDate } from '@/utils/date';
 
@@ -48,23 +45,6 @@ export default function BookDetails({ book }) {
                         primaryText={`${book.pages} страниц`}
                     />
                 }
-
-                <List.Item
-                    icon="label"
-                    content={
-                        <ChipSet>
-                            {book.topics.map(topic =>
-                                <Chip
-                                    key={topic.id}
-                                    element={Link}
-                                    to={topic.url}
-                                    text={topic.title}
-                                />
-                            )}
-                        </ChipSet>
-                    }
-                    oneLine
-                />
             </List>
         </section>
     );

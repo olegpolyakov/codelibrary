@@ -1,17 +1,12 @@
-import React, { useEffect } from 'react';
-import {
-    Layout,
-    LayoutGrid, LayoutGridCell,
-    Typography
-} from 'mdc-react';
+import { useEffect } from 'react';
 
-import { useStore } from '@/store/hooks';
-import { actions as bookActions } from '@/store/reducers/books';
-
-import BookCard from '@/components/BookCard';
+import { useStore } from '@/hooks/store';
+import { actions as bookActions } from '@/store/modules/books';
+import BooksGrid from '@/components/BooksGrid';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
+import PageSection from '@/components/PageSection';
 
 import './index.scss';
 
@@ -29,19 +24,11 @@ export default function HomePage() {
     return (
         <Page id="home-page">
             <PageContent>
-                <LayoutGrid>
-                    <LayoutGridCell span="12">
-                        <Typography variant="headline6" noMargin>Недавно добавленные</Typography>
-                    </LayoutGridCell>
-
-                    {books?.map(book =>
-                        <LayoutGridCell key={book.id} span="2">
-                            <BookCard
-                                book={book}
-                            />
-                        </LayoutGridCell>
-                    )}
-                </LayoutGrid>
+                <PageSection title="Недавно добавленные">
+                    <BooksGrid
+                        books={books}
+                    />
+                </PageSection>
             </PageContent>
         </Page>
     );

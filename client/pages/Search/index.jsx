@@ -3,9 +3,8 @@ import {
     LayoutGrid
 } from 'mdc-react';
 
-import { useStore } from '@/store/hooks';
-import { actions as bookActions } from '@/store/reducers/books';
-
+import { useStore } from '@/hooks/store';
+import { actions as bookActions } from '@/store/modules/books';
 import BookCard from '@/components/BookCard';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import Page from '@/components/Page';

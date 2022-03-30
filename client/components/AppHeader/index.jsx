@@ -9,7 +9,7 @@ import {
 } from 'mdc-react';
 
 import { useBoolean } from '@/hooks/state';
-import { useStore } from '@/store/hooks';
+import { useStore } from '@/hooks/store';
 import SearchField from '@/components/SearchField';
 
 import './index.scss';
@@ -39,6 +39,16 @@ export default function AppHeader({ onNavigationButtonClick, onCreateButtonClick
                 </TopAppBar.Section>
 
                 <TopAppBar.Section align="end">
+                    <TopAppBar.ActionItem>
+                        <IconButton
+                            element="a"
+                            href="https://github.com/olegpolyakov/codelibrary/issues/new"
+                            target="_blank"
+                            title="Сообщить о проблеме"
+                            icon="bug_report"
+                        />
+                    </TopAppBar.ActionItem>
+
                     {user &&
                         <TopAppBar.ActionItem>
                             <IconButton

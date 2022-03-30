@@ -1,14 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
-import {
-    IconButton,
-    LayoutGrid
-} from 'mdc-react';
+import { IconButton } from 'mdc-react';
 
-import { useStore } from '@/store/hooks';
-import { actions as bookActions } from '@/store/reducers/books';
-import { actions as topicActions } from '@/store/reducers/topics';
-
-import BookCard from '@/components/BookCard';
+import { useStore } from '@/hooks/store';
+import { actions as bookActions } from '@/store/modules/books';
+import { actions as topicActions } from '@/store/modules/topics';
+import BooksGrid from '@/components/BooksGrid';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
@@ -40,7 +36,7 @@ export default function TopicPage({ match }) {
         actions.markTopic(topic);
     }, [topic, user]);
 
-    if (!topic) return <LoadingIndicator />;
+    if (!topic || !books) return <LoadingIndicator />;
 
     // const filteredBooks = books.slice()
     //     .sort((a, b) => b.likedBy.length - a.likedBy.length)
@@ -72,15 +68,9 @@ export default function TopicPage({ match }) {
             />
 
             <PageContent>
-                <LayoutGrid>
-                    {books?.map(book =>
-                        <LayoutGrid.Cell key={book.id} span="2">
-                            <BookCard
-                                book={book}
-                            />
-                        </LayoutGrid.Cell>
-                    )}
-                </LayoutGrid>
+                <BooksGrid
+                    books={books}
+                />
             </PageContent>
         </Page>
     );

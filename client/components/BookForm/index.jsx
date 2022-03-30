@@ -6,7 +6,7 @@ import {
     TextField
 } from 'mdc-react';
 
-import { useSelector } from '@/store/hooks';
+import { useSelector } from '@/hooks/store';
 import Form from '@/components/Form';
 import publishers from '@/data/publishers';
 import languages from '@/data/languages';
@@ -99,8 +99,8 @@ export default function BookForm({ user, book = defaultBook, onSubmit, ...props 
                 label="Название"
                 value={data.title}
                 outlined
+                onBlur={handleTitleBlur}
                 onChange={handleChange}
-            //onBlur={handleTitleBlur}
             />
 
             <TextField

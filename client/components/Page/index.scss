@@ -1,4 +1,10 @@
+@use 'styles/mixins';
+
 .page {
     max-width: 1280px;
     margin: auto;
+
+    @include mixins.media-query(sm) {
+        margin-bottom: 65px;
+    }
 }
