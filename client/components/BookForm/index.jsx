@@ -84,16 +84,6 @@ export default function BookForm({ user, book = defaultBook, onSubmit, ...props 
 
     return (
         <Form className="book-form" onSubmit={handleSubmit} {...props}>
-            {user?.isAdmin &&
-                <FormField label="Опубликована" alignEnd spaceBetween>
-                    <Switch
-                        name="published"
-                        selected={data.published}
-                        onChange={handleChange}
-                    />
-                </FormField>
-            }
-
             <TextField
                 name="title"
                 label="Название"
@@ -201,23 +191,35 @@ export default function BookForm({ user, book = defaultBook, onSubmit, ...props 
                 onChange={handleChange}
             />
 
-            <Select
-                name="documentFormat"
-                label="Формат документа"
-                value={data.documentFormat}
-                options={documentFormats.map(({ id, label }) => ({ key: id, value: id, text: label }))}
-                outlined
-                onChange={handleChange}
-            />
+            {user?.isAdmin &&
+                <>
+                    <FormField label="Опубликована" alignEnd spaceBetween>
+                        <Switch
+                            name="published"
+                            selected={data.published}
+                            onChange={handleChange}
+                        />
+                    </FormField>
 
-            <Select
-                name="imageFormat"
-                label="Формат изображения"
-                value={data.imageFormat}
-                options={imageFormats.map(({ id, label }) => ({ key: id, value: id, text: label }))}
-                outlined
-                onChange={handleChange}
-            />
+                    <Select
+                        name="documentFormat"
+                        label="Формат документа"
+                        value={data.documentFormat}
+                        options={documentFormats.map(({ id, label }) => ({ key: id, value: id, text: label }))}
+                        outlined
+                        onChange={handleChange}
+                    />
+
+                    <Select
+                        name="imageFormat"
+                        label="Формат изображения"
+                        value={data.imageFormat}
+                        options={imageFormats.map(({ id, label }) => ({ key: id, value: id, text: label }))}
+                        outlined
+                        onChange={handleChange}
+                    />
+                </>
+            }
         </Form>
     );
 }
