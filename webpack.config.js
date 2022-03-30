@@ -83,7 +83,8 @@ export default env => {
                                 webpackImporter: false,
                                 sassOptions: {
                                     includePaths: [
-                                        path.resolve('node_modules')
+                                        path.resolve('node_modules'),
+                                        path.resolve('client')
                                     ]
                                 }
                             }
