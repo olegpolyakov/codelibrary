@@ -18,8 +18,8 @@ const Book = new Schema({
     language: { type: String, enum: ['en', 'ru'] },
     level: { type: String, enum: ['beg', 'int', 'adv'] },
     pageUrl: String,
-    imageFormat: { type: String, default: 'png' },
-    documentFormat: { type: String, default: 'pdf' },
+    imageFormat: { type: String },
+    documentFormat: { type: String },
     likedBy: [{ type: Schema.Types.ObjectId, ref: 'User' }]
 }, {
     timestamps: false,
@@ -59,11 +59,11 @@ Book.virtual('likes').get(function() {
 });
 
 Book.virtual('imageUrl').get(function() {
-    return `${process.env.STORAGE_URL}/covers/${this.slug}.${this.imageFormat}`;
+    return this.imageFormat && `${process.env.STORAGE_URL}/covers/${this.slug}.${this.imageFormat}`;
 });
 
 Book.virtual('documentUrl').get(function() {
-    return `${process.env.STORAGE_URL}/books/${this.slug}.${this.documentFormat}`;
+    return this.documentFormat && `${process.env.STORAGE_URL}/books/${this.slug}.${this.documentFormat}`;
 });
 
 Book.virtual('topic', {
