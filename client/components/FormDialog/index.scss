@@ -1,3 +1,5 @@
+@use 'styles/mixins';
+
 .form-dialog {
     .mdc-dialog__surface {
         min-width: 480px;
@@ -5,5 +7,12 @@
 
     .mdc-dialog__content {
         padding-top: 4px;
-    } 
+    }
+
+    @include mixins.media-query(sm) {
+        .mdc-dialog__surface {
+            min-width: unset;
+            width: 100%;
+        }
+    }
 }
