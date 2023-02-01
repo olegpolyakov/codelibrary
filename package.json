@@ -19,7 +19,7 @@
     "helmet": "^5.0.1",
     "markdown-it": "^12.3.0",
     "mdc-react": "^1.0.0-beta.7",
-    "mongoose": "^5.13.14",
+    "mongoose": "^5.13.15",
     "morgan": "^1.10.0",
     "ms": "^2.1.3",
     "react": "^17.0.0",
