@@ -41,7 +41,7 @@
     "dotenv": "^10.0.0",
     "html-webpack-plugin": "^5.5.0",
     "mini-css-extract-plugin": "^2.4.5",
-    "nodemon": "^2.0.15",
+    "nodemon": "^2.0.20",
     "postcss-loader": "^6.2.1",
     "redux-devtools-extension": "^2.13.9",
     "sass": "^1.45.2",
